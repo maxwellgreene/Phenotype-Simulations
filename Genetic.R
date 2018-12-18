@@ -2,7 +2,7 @@
 #Genetic Evolution
 
 
-geneticSpecies <- function(fitfunc,species,gens,indivs,creation = "new", plot = "maxVals")
+geneticPopulation <- function(fitfunc,species,gens,indivs,creation = "new", plot = "maxVals")
 {
   #========== CREATE DATAFRAME ==========
   specData <- data.frame(speciesNum=0,timestep=1,avgFit=0,maxFit=0,minFit=0,var1=0,var2=0)
@@ -11,7 +11,7 @@ geneticSpecies <- function(fitfunc,species,gens,indivs,creation = "new", plot = 
   for(i in 1:species)
   {
     #========== GENERATION DATA ==========
-    temp <- geneticPopulation(fitfunc = fitfunc,num = indivs,gens = gens,creation = creation,return=T)
+    temp <- geneticSpecies(fitfunc = fitfunc,indivs = indivs,gens = gens,creation = creation,return=T)
     specData <- rbind(specData,
                       dplyr::mutate(speciesNum = rep(i,nrow(temp)),temp))
   }
@@ -41,12 +41,12 @@ geneticSpecies <- function(fitfunc,species,gens,indivs,creation = "new", plot = 
 
 
 
-geneticPopulation <- function(fitfunc,num,gens,creation = "new",return = F)
+geneticSpecies <- function(fitfunc,indivs,gens,creation = "new",return = F)
 {
   #========== CREATE AGENTS ==========
     #Assign each agent a value for var1 and var2 according to rnorm
-    agents <- data.frame(var1 = rnorm(num,0,1),
-                         var2 = rnorm(num,0,1))
+    agents <- data.frame(var1 = rnorm(indivs,0,1),
+                         var2 = rnorm(indivs,0,1))
     #Assign each agent a score according to fitfunc(var1,var2)
     agents<- mutate(agents, fitness = fitfunc(var1,var2))
   
