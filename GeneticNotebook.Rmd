@@ -1,0 +1,39 @@
+---
+title: "Genetic Notebook"
+output: html_notebook
+---
+
+#Preliminaries
+Load Libraries
+```{r,message=FALSE}
+library(tidyverse)
+library(dplyr)
+```
+
+Define function
+```{r}
+fitfunc <- function(x,y)
+{return(1/100*(x^2+y^2))}
+```
+
+#Function Running
+
+```{r}
+geneticPopulation(fitfunc,10,10,creation="new")
+```
+
+
+```{r}
+geneticSpecies(fitfunc,species=10,gens=100,indivs=3,creation="child",plot="time")
+```
+
+```{r}
+geneticSpecies(
+  fitfunc,species=5,gens=100,indivs=3,creation="child",plot="maxVals")
+```
+
+
+
+
+
+

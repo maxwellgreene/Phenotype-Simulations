@@ -1,5 +1,7 @@
 #Maxwell Greene
 #Colony-level evolution simulation with multiple time-step fitness consideration
+
+#Create Age-Test Frequency Matrix
 createATFM <- function(cols = 5, groups = 3, tasks = 3)
 {  
   normRowMat <- function(unused)
@@ -16,6 +18,7 @@ createATFM <- function(cols = 5, groups = 3, tasks = 3)
   return(combined)
 }
 
+#Evaluate the fitness of a colony
 fitnessEval <- function(colonies, matrix, fitness, time = 10)
 {
   for(i in 1:length(colonies))
@@ -29,7 +32,9 @@ fitnessEval <- function(colonies, matrix, fitness, time = 10)
   return(fitness(colony))
 }
 
-fitfunc <- function(colonies)
+
+#Modify the fitness function to use
+colfitfunc <- function(colonies)
 {
   fitness <- rep(NA,length(colonies))
   for(i in 1:length(colonies))
