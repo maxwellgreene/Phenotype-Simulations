@@ -11,11 +11,12 @@
 * checking package dependencies ... OK
 * checking if this is a source package ... OK
 * checking if there is a namespace ... OK
-* checking for .dll and .exe files ... OK
+* checking for executable files ... OK
 * checking for hidden files and directories ... OK
 * checking for portable file names ... OK
 * checking serialization versions ... OK
 * checking whether package 'GeneticAlgorithms' can be installed ... OK
+* checking installed package size ... OK
 * checking package directory ... OK
 * checking DESCRIPTION meta-information ... WARNING
 Non-standard license specification:
@@ -54,7 +55,6 @@ geneticPopulation: no visible global function definition for
   'geom_contour'
 geneticPopulation: no visible binding for global variable 'Var1'
 geneticPopulation: no visible binding for global variable 'Var2'
-geneticSpecies: no visible global function definition for 'rnorm'
 geneticSpecies: no visible global function definition for 'mutate'
 geneticSpecies: no visible binding for global variable 'var1'
 geneticSpecies: no visible binding for global variable 'var2'
@@ -67,10 +67,7 @@ geneticSpecies: no visible binding for global variable 'minFit'
 geneticSpecies: no visible binding for global variable 'maxFit'
 Undefined global functions or variables:
   Var1 Var2 aes avgFit geom_contour geom_line geom_point ggplot maxFit
-  minFit mutate rnorm speciesNum theme timestep var1 var2
-Consider adding
-  importFrom("stats", "rnorm")
-to your NAMESPACE file.
+  minFit mutate speciesNum theme timestep var1 var2
 * checking Rd files ... OK
 * checking Rd metadata ... OK
 * checking Rd line widths ... OK

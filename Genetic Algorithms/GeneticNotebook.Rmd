@@ -78,13 +78,36 @@ fitnessFunction <- function(x,y)
 fitnessFunction(1,2)
 ```
 
+##Reproduction and Mutations
+In nature, individuals produce offspring that are *similar* to themselves. Several types of reproduction exist in nature, most of which involve the combination of two sets of DNA, followed by a possiblity for mutations. In this simulation, each new  individual following the first generation is either a slightly mutated version of a "parent" or an entirely new individual, not dependent on the phenotypes of any other individual in their species. Notably, though, the phenotypes of new individuals are determiend by the same distributions as the species they belong to.
+  
+Here is an example of **new** type creation:
+```{r}
+parent <- data.frame(var1=rnorm(1,0,.5),
+                     var2=rnorm(1,0,.5))
+
+child <- data.frame(var1=rnorm(1,0,.5),
+                    var2=rnorm(1,0,.5))
+```
+  
+Here is an example of **child** type creation:
+```{r}
+parent <- data.frame(var1=rnorm(1,0,.5),
+                     var2=rnorm(1,0,.5))
+
+offspring <- data.frame(var1=parent$var1*rnorm(1,1,.1),
+                        var2=parent$var2*rnorm(1,1,.1))
+```
+Notice here how the offspring only differ from their parents by `rnorm(1,1,.1)`, which gives a small yet noticeable mutation to their parent.
+
 <!-- =================================== -->
 <!-- ===== COMPLETED TO THIS POINT ===== -->
 <!-- =================================== -->
 
-##Generations
-
 ##Evolution
+
+
+
 
 ```{r}
 fitfunc <- function(x,y)
