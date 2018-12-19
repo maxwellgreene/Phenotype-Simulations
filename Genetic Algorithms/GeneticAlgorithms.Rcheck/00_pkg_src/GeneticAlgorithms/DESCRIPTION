@@ -1,0 +1,15 @@
+Package: GeneticAlgorithms
+Type: Package
+Title: Introduction to Genetic Algorithms, An Example
+Version: 0.1.0
+Author: Maxwell Greene
+Maintainer: Maxwell Greene <maxwell.greene@scranton.edu>
+Description: This package serves not only as a tutorial on developing packages for myself, but as a compilation of functions used in my introduction to a method used in my main project, simulating bee task performance.
+    Here I'll practice good documentation, saving and loading package habits.
+License: NA
+Imports: tidyverse, dplyr
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+NeedsCompilation: no
+Packaged: 2018-12-19 21:01:43 UTC; Max
