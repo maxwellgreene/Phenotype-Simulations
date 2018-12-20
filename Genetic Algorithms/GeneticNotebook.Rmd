@@ -206,10 +206,15 @@ geneticPopulation(fitfunc,species=5,indivs=5,gens=1000,creation="new",plot="maxV
 geneticPopulation(fitfunc,species=5,indivs=5,gens=1000,creation="child",plot="maxVals")
 ```
 
-```{r fig14, fig.height=6, fig.width=10}
-fitfunc <- function(x,y) {return(sin(x*y)-cos(x*y))}
-geneticPopulation(fitfunc,species=5,indivs=5,gens=1000,creation="new",plot="maxVals")
-geneticPopulation(fitfunc,species=5,indivs=5,gens=1000,creation="child",plot="maxVals")
+```{r fig15, fig.height=6, fig.width=10}
+fitfunc <- function(x1, x2)
+{
+  x1 <- x1/5
+  x2 <- x2/5
+  return(20 + x1^2 + x2^2 - 10*(cos(2*pi*x1) + cos(2*pi*x2)))
+}
+geneticPopulation(fitfunc,species=5,indivs=5,gens=100,creation="new",plot="maxVals")
+geneticPopulation(fitfunc,species=5,indivs=5,gens=100,creation="child",plot="maxVals")
 ```
 
 
