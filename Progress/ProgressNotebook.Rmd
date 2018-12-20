@@ -1,7 +1,6 @@
 ---
 title: "ToDo's and Progress Tracking Notebook"
 output: pdf_document
-indent: TRUE
 ---
 
 This notebook is intended to keep track of my progress each day over intercession on this project. I'll log my TODO's each morning or night and what I've accomplished each day. Let's hope I keep up with it properly.
@@ -53,14 +52,23 @@ Looking Forward / Rolling ToDo:
 2. Compile plan into a chart / pseudocode
 3. Look more into literature: how to apply GA to this project
 
+###Progress
+I spent a good amount of time fiddling with RStudio Server on the CAELinux PC in the lab without any luck in accessing it from another computer. Judging by some similar problems on discussion forums, it seems like the school networking is blocking the PC from opening the correct ports to access it remotely.   
+Then I moved on to compiling my GA functions into a package, which was successful but I ahve not uploaded it to CRAN.   
+Lastly, I made major progress on the GA notebook. All that is left to do is explore a frew more functions for the contour plots in order to better understand the evolution process in these algorithms.
 
+#Thursday December 20th
+###TO DO
+Today's ToDo: (Big Picture Day)
 
+1. Finalize GA notebook
+2. See "looking forward", make plans for work after break
+  
+Looking Forward / Rolling ToDo:
 
-
-
-
-
-
+1. Make larger plan for going forward
+2. Compile plan into a chart / pseudocode
+3. Look more into literature: how to apply GA to this project
 
 
 

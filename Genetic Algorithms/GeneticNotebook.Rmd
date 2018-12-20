@@ -164,10 +164,70 @@ geneticPopulation(fitfunc,species=10,indivs=5,gens=1000,creation="new",plot="max
 geneticPopulation(fitfunc,species=10,indivs=5,gens=1000,creation="child",plot="maxVals")
 ```
 
-<!-- =================================== -->
-<!-- ===== COMPLETED TO THIS POINT ===== -->
-<!-- =================================== -->
+<!-- ============================================= -->
+<!-- ===== EXPERIMENTATION BEYOND THIS POINT ===== -->
+<!-- ============================================= -->
 
 TODO: Consider other functions in the contour plot to show **local maxima** and **gradient ascent**
+
+```{r fig9, fig.height=3, fig.width=5}
+fitfunc <- function(x,y) {return(x^2+y^2)}
+geneticPopulation(fitfunc,species=10,indivs=5,gens=100,creation="new",plot="maxVals")
+geneticPopulation(fitfunc,species=10,indivs=5,gens=100,creation="child",plot="maxVals")
+```
+
+```{r fig10, fig.height=6, fig.width=10}
+fitfunc <- function(x,y) {return(x^3+y^3)}
+geneticPopulation(fitfunc,species=10,indivs=5,gens=100,creation="new",plot="maxVals")
+geneticPopulation(fitfunc,species=10,indivs=5,gens=300,creation="child",plot="maxVals")
+```
+
+```{r fig11, fig.height=6, fig.width=10}
+fitfunc <- function(x,y) {return(sin(x)+cos(y))}
+geneticPopulation(fitfunc,species=10,indivs=5,gens=100,creation="new",plot="maxVals")
+geneticPopulation(fitfunc,species=10,indivs=5,gens=300,creation="child",plot="maxVals")
+```
+
+```{r fig12, fig.height=6, fig.width=10}
+fitfunc <- function(x,y) {return(sin(x)-cos(y))}
+geneticPopulation(fitfunc,species=10,indivs=5,gens=100,creation="new",plot="maxVals")
+geneticPopulation(fitfunc,species=10,indivs=5,gens=300,creation="child",plot="maxVals")
+```
+
+```{r fig13, fig.height=6, fig.width=10}
+fitfunc <- function(x,y) {return(sin(x/2)-cos(y/2))}
+geneticPopulation(fitfunc,species=5,indivs=5,gens=100,creation="new",plot="maxVals")
+geneticPopulation(fitfunc,species=5,indivs=5,gens=300,creation="child",plot="maxVals")
+```
+
+```{r fig14, fig.height=6, fig.width=10}
+fitfunc <- function(x,y) {return(sin(x*y)-cos(x*y))}
+geneticPopulation(fitfunc,species=5,indivs=5,gens=1000,creation="new",plot="maxVals")
+geneticPopulation(fitfunc,species=5,indivs=5,gens=1000,creation="child",plot="maxVals")
+```
+
+```{r fig14, fig.height=6, fig.width=10}
+fitfunc <- function(x,y) {return(sin(x*y)-cos(x*y))}
+geneticPopulation(fitfunc,species=5,indivs=5,gens=1000,creation="new",plot="maxVals")
+geneticPopulation(fitfunc,species=5,indivs=5,gens=1000,creation="child",plot="maxVals")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
