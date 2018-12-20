@@ -29,7 +29,7 @@ phenotype
 ```
 
 ##What is an Individual?
-An individual in this simulation is exactly what it is in nature, a single animal or single unit of selection. Individuals will be defined as a 2D vector of phenotypes  determined by a random distribution. That is, each individual is made up of two phenotypes represented as a 2D vector that can easily be analyzed by a fitness function. 
+An individual in this simulation is exactly what it is in nature, a single animal or single unit of selection. Individuals will be defined as a 2D vector of phenotypes  determined by a random distribution. That is, each individual is made up of two phenotypes represented as a 2D vector that can easily be analyzed by a fitness function.   
 Here is an example of an individual:
 ```{r}
 individual <- data.frame(var1=rnorm(1,0,1),
@@ -38,7 +38,7 @@ individual
 ```
 
 ##What is a Species?
-I will call a single group of individuals sharing the same genetic foundation a species and are in the same reproduction and competition pool. A "genetic foundation" is the particular distribution used to define their phenotypes. Additionally, the reproduction and competition pools are groups that only produce and compete with each other.
+I will call a single group of individuals sharing the same genetic foundation a species and are in the same reproduction and competition pool. A "genetic foundation" is the particular distribution used to define their phenotypes. Additionally, the reproduction and competition pools are groups that only produce and compete with each other.   
 Here is an example of a species:
 ```{r}
 numIndivs <- 2
@@ -52,7 +52,7 @@ makespecies(numIndivs)
 ```
 
 ##What is a Population?
-A population, in this simulation, is a large group of individuals consisting of a number of species. That is, a number of groups of individuals, each of which are produced by differing distributions and only compete within groups.
+A population, in this simulation, is a large group of individuals consisting of a number of species. That is, a number of groups of individuals, each of which are produced by differing distributions and only compete within groups.   
 Here is an example of a population:
 ```{r}
 numSpecies <- 2
@@ -69,8 +69,8 @@ Essentially, a population is a compilation of a number of species, identified by
 
 
 ##Fitness Functions
-In nature, each individual has a "fitness" that is a function of their phenotypes. For example, a longer neck allows a giraffe to reach more food increasing its fitness. Therefore, the fitness function will reward genes that contribute to a higher neck, assuming it does not impede functions in any other way. As you can imagine, accounting for impeding other functions becomes very complex, especially given the number of genes and possible interactions. 
-In this simulation, I use several fitness functions of differing complexity, all of only two variables.
+In nature, each individual has a "fitness" that is a function of their phenotypes. For example, a longer neck allows a giraffe to reach more food increasing its fitness. Therefore, the fitness function will reward genes that contribute to a higher neck, assuming it does not impede functions in any other way. As you can imagine, accounting for impeding other functions becomes very complex, especially given the number of genes and possible interactions.    
+In this simulation, I use several fitness functions of differing complexity, all of only two variables.   
 Here is an example of a fitness function:
 ```{r}
 fitnessFunction <- function(x,y)
@@ -79,7 +79,7 @@ fitnessFunction(1,2)
 ```
 
 ##Reproduction and Mutations
-In nature, individuals produce offspring that are *similar* to themselves. Several types of reproduction exist in nature, most of which involve the combination of two sets of DNA, followed by a possiblity for mutations. In this simulation, each new  individual following the first generation is either a slightly mutated version of a "parent" or an entirely new individual, not dependent on the phenotypes of any other individual in their species. Notably, though, the phenotypes of new individuals are determiend by the same distributions as the species they belong to.
+In nature, individuals produce offspring that are *similar* to themselves. Several types of reproduction exist in nature, most of which involve the combination of two sets of DNA, followed by a possiblity for mutations. In this simulation, each new  individual following the first generation is either a slightly mutated version of a "parent" or an entirely new individual, not dependent on the phenotypes of any other individual in their species. Notably, though, the phenotypes of new individuals are determiend by the same distributions as the species they belong to.   
   
 Here is an example of **new** type creation:
 ```{r}
@@ -100,42 +100,74 @@ offspring <- data.frame(var1=parent$var1*rnorm(1,1,.1),
 ```
 Notice here how the offspring only differ from their parents by `rnorm(1,1,.1)`, which gives a small yet noticeable mutation to their parent.
 
+##Evolution
+In nature, the most fit individuals are the most likely to reproduce and pass on their genes, creating a relatively fit individual compared to the population. In my simulation, as a way to accelerate the increase in maximum and mean fitness, a new individual each time step replaces the individual with the lowest fitness.   
+Take a look at the following application to better understand and visualize this evolution:
+
+#The Application
+First, I'll define the funciton used to calculate the fitness of each individual:   
+```{r}
+fitfunc <- function(x,y)
+{return((y*sin(x)+x*cos(y)))}
+```
+
+Now, let's look at the evolution of a population in terms of average fitness:   
+
+##Average Fitness Over Time
+The following plot is a visual representation of the increase in mean fitness of a population, separated species. This population created new individuals using the **new** creation type, meaning each individual comes from exactly the same distributions as its parents. Here we consider 10 species, each with 10 individuals over 100 generations.
+
+```{r fig1, fig.height=3, fig.width=5}
+geneticPopulation(fitfunc,species=10,indivs=10,gens=100,creation="new",plot="time")
+```
+
+Now, let's look at the same plot from a population evolved by the **child** creation method, which slightly mutates a parent in order to create each new child.   
+```{r fig2, fig.height=3, fig.width=5}
+geneticPopulation(fitfunc,species=10,indivs=10,gens=100,creation="child",plot="time")
+```
+
+These two plots looks fairly similar in structure, but let's see what happens when we expand their evolution out to 1000 generations.   
+First from the **new** creation type:
+```{r fig3, fig.height=3, fig.width=5}
+geneticPopulation(fitfunc,species=10,indivs=10,gens=1000,creation="new",plot="time")
+```
+
+Now from the **child** creation type:
+```{r fig4, fig.height=3, fig.width=5}
+geneticPopulation(fitfunc,species=10,indivs=10,gens=1000,creation="child",plot="time")
+```
+
+The **new** creation type population reaches a maximum at fitness score of ~3, while the **child** creation type population soars past that in fitness. This is because the **child** population is able to benefit from continuous mutations on a successful phenotype, while the **new** population is limited by the probability given in the distributions used to craete the individuals. That is, it is extremely unlikely for the distribution used to produce the phenotype found by the evolution of the **child** population.   
+
+This leads well into the great part about genetic algorithms: their ability to discover local or global maxima or minima to a "fitness" function that may not have been expected. The following plots are a great way to visualize the way that these population can "approach" a local maxima. Specifically, they show a contour plot of the fitness function overlayed onto a scatterplot of the `var1` and `var2` phenotypes of the individual with the highest fitness score from each population at each generation.   
+
+First, let's look at a population with **new** creation method with 10 species, each with 5 individuals over 100 generations.
+```{r fig5, fig.height=3, fig.width=5}
+geneticPopulation(fitfunc,species=10,indivs=5,gens=100,creation="new",plot="maxVals")
+```
+
+Now, here is the exact same plot using the **child** creation method.
+```{r fig6, fig.height=3, fig.width=5}
+geneticPopulation(fitfunc,species=10,indivs=5,gens=100,creation="child",plot="maxVals")
+```
+
+The major difference to note here is what look like clumps or lines of dots in the second plot. As would be expected using the **child** creation method, the children are closely related to their parents, which is represented by a spatial proxomity on this plot. That is, each progresive generation *should* theoretically be a small step from the last generation towards a local (ideally global) maxima of the fitness function. Note that the gradient of a contour plot is perpendicular to the plot lines, making this the optimal direction of travel.   
+My hypothesis for the tendency of these point clusters to "travel" along a single axis is this:   
+It is relatively unlikely that both phenotypic mutations produce a great increase in fitness in any given generation, while it is fairly likely that a slight change in one of them cause a notable increase in fitness. Therefore, generational mutations are significantly more likely to be effected on the variable with a larger gradient value with respect to the fitness function than the other.   
+
+Lastly, let's look at these two plots over 1000 generations.
+
+```{r fig7, fig.height=3, fig.width=5}
+geneticPopulation(fitfunc,species=10,indivs=5,gens=1000,creation="new",plot="maxVals")
+```
+
+```{r fig8, fig.height=3, fig.width=5}
+geneticPopulation(fitfunc,species=10,indivs=5,gens=1000,creation="child",plot="maxVals")
+```
+
 <!-- =================================== -->
 <!-- ===== COMPLETED TO THIS POINT ===== -->
 <!-- =================================== -->
 
-##Evolution
-
-
-
-
-```{r}
-fitfunc <- function(x,y)
-{return((x^2+y^2))}
-```
-
-#Function Running
-```{r}
-geneticSpecies(fitfunc,gens=100,indivs=3,creation="child")
-```
-
-```{r}
-geneticPopulation(fitfunc,species=10,indivs=10,gens=100,creation="new",plot="time")
-```
-
-```{r}
-geneticPopulation(
-  fitfunc,species=10,indivs=10,gens=100,creation="child",plot="time")
-```
-
-```{r}
-geneticPopulation(
-  fitfunc,species=10,indivs=10,gens=100,creation="new",plot="maxVals")
-```
-
-```{r}
-geneticPopulation(
-  fitfunc,species=10,indivs=10,gens=100,creation="child",plot="maxVals")
-```
+TODO: Consider other functions in the contour plot to show **local maxima** and **gradient ascent**
 
 

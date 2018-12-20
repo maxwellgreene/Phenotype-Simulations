@@ -42,7 +42,7 @@ geneticSpecies <- function(fitfunc,indivs,gens,creation = "new",return = F)
     }else if(creation == "child")
     {
       #randomly select a parent from current population
-      parent <- sample(1:NROW(agents),1)
+      parent <- which.max(agents$fitness)#sample(1:NROW(agents),1)
       #modify parent by rnorm weight and re-assign fitness
       newAgent <- data.frame(var1 = rnorm(1,1,.03)*agents$var1[parent],
                              var2 = rnorm(1,1,.03)*agents$var2[parent],
