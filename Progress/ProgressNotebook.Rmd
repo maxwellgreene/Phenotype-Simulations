@@ -62,14 +62,13 @@ Lastly, I made major progress on the GA notebook. All that is left to do is expl
 Today's ToDo: (Big Picture Day)
 
 1. Finalize GA notebook.
-2. See "looking forward", make plans for work after break.
+2. See "looking forward", make plans for work during/after break.
 3. Review "Math Framework for Task Reportoire Expansion" paper and decide if that model fits.
   
 Looking Forward / Rolling ToDo:
 
-1. Make larger plan for going forward
-2. Compile plan into a chart / pseudocode
-3. Look more into literature: how to apply GA to this project
+1. Make larger plan for going forward as chart / pseudocode
+2. Look more into literature: how to apply GA to this project -> [Annotated Bibliography Google Doc]("https://docs.google.com/document/d/1Eu_zMDIhtgkyTLazfbn7v8vJ5Pa9T_E6ZIkz92yFPWk/edit?usp=sharing")
 
 
 

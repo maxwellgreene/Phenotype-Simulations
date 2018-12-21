@@ -1,0 +1,54 @@
+---
+title: "Threshold Task Performance Exploration"
+output: pdf_document
+---
+
+This document will be solidly based off of a simulation originalyl created in the early 2000's by Myerscough and Oldroyd in a paper titled ["Simulation models of the role of genetic variability in social insect task allocation" ]("https://link.springer.com/content/pdf/10.1007/s00040-003-0713-1.pdf")
+
+```{r}
+library(tidyverse)
+library(dplyr)
+```
+
+Let's start by creating a population:
+```{r}
+nSubFam <- 2
+nIndiv <- 100
+population <- data.frame(SubFam = rep(1:nSubFam,each=nIndiv),
+                         Thresh = rep(rep(sample(0:100,nSubFam)),each=nIndiv),
+                         Status = rep(0,nSubFam*nIndiv))
+population
+```
+
+Now, let's run these individuals through a time-series random generator.
+```{r}
+nGen <- 1200
+nEachGen <- 1
+Thresh <- c(50,20,80)
+sumStatus <- 1
+
+for(genNum in 1:nGen)
+{
+  temprows <- sample(1:nrow(population),nEachGen)
+  population$Status[temprows] <- 
+    ifelse(population$Thresh[temprows]>Thresh[ceiling(genNum/(nGen/3))],1,0)
+  sumStatus[genNum] <- sum(population$Status)
+}
+
+population
+```
+
+```{r}
+ggplot(data=data.frame(sumStatus=sumStatus)) +
+  geom_point(mapping=aes(x=1:length(sumStatus),y=sumStatus)) + 
+  geom_hline(mapping=aes(yintercept=10))
+```
+
+This was a pretty simple simulation paper.
+
+
+
+
+
+
+Myerscough, M. R., and B. P. Oldroyd. "Simulation models of the role of genetic variability in social insect task allocation." Insectes Sociaux 51.2 (2004): 146-152.
