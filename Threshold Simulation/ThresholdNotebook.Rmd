@@ -17,7 +17,7 @@ nIndiv <- 100
 population <- data.frame(SubFam = rep(1:nSubFam,each=nIndiv),
                          Thresh = rep(rep(sample(0:100,nSubFam)),each=nIndiv),
                          Status = rep(0,nSubFam*nIndiv))
-population
+head(population)
 ```
 
 Now, let's run these individuals through a time-series random generator.
@@ -35,7 +35,7 @@ for(genNum in 1:nGen)
   sumStatus[genNum] <- sum(population$Status)
 }
 
-population
+head(population)
 ```
 
 ```{r}

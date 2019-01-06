@@ -1,7 +1,6 @@
 #Maxwell Greene
 #Genetic Evolution
 
-
 geneticPopulation <- function(fitfunc,species,gens,indivs,creation = "new", plot = "maxVals")
 {
   #========== CREATE DATAFRAME ==========

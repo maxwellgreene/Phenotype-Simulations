@@ -68,7 +68,32 @@ Today's ToDo: (Big Picture Day)
 Looking Forward / Rolling ToDo:
 
 1. Make larger plan for going forward as chart / pseudocode
-2. Look more into literature: how to apply GA to this project -> [Annotated Bibliography Google Doc]("https://docs.google.com/document/d/1Eu_zMDIhtgkyTLazfbn7v8vJ5Pa9T_E6ZIkz92yFPWk/edit?usp=sharing")
+2. Look more into literature: how to apply GA to this project, [Annotated Bibliography Google Doc]("https://docs.google.com/document/d/1Eu_zMDIhtgkyTLazfbn7v8vJ5Pa9T_E6ZIkz92yFPWk/edit?usp=sharing")
+
+###Progress
+After reading some literature, I wrote "ThresholdNotebook" to better understand the claims of a paper on the robustness of a colony with greater genetic variability. This notebook outlines the exact simulation of the paper. While this simulation was very simple, I would like to continue investigating the idea of genetic variability and robustness to a changing environment and task demands.
+Need to keep looking into literature and frame research question properly.
+
+#Friday December 21st - Tuesday January 1st
+Took Holiday Break
+
+#Wednesday January 2nd - Friday January 4th
+Wisdom Teeth Removed, out of commission for a few days.
+
+#Saturday January 5th
+Back to work.  
+
+###TO DO
+Today's ToDo:
+1. Work on ThresholdNotebook, see if I can draw any further conclusions on the work than the authors did.
+
+Rolling ToDo:
+1. Make larger plan for going forward as flowchart / pseudocode
+2. Look more into literature: how to apply GA to this project, [Annotated Bibliography Google Doc]("https://docs.google.com/document/d/1Eu_zMDIhtgkyTLazfbn7v8vJ5Pa9T_E6ZIkz92yFPWk/edit?usp=sharing"). Specifically, review "Math Framework for Task Reportoire Expansion" paper and decide if that model fits.
+
+
+
+
 
 
 
