@@ -5,17 +5,18 @@ output: pdf_document
 
 This document will be solidly based off of a simulation originalyl created in the early 2000's by Myerscough and Oldroyd in a paper titled ["Simulation models of the role of genetic variability in social insect task allocation" ]("https://link.springer.com/content/pdf/10.1007/s00040-003-0713-1.pdf")
 
-```{r}
+```{r,echo=FALSE,message=FALSE}
 library(tidyverse)
 library(dplyr)
 ```
 
 Let's start by creating a population:
 ```{r}
-nSubFam <- 2
+nSubFam <- 3
 nIndiv <- 100
+Threshs <- rep(sample(0:100,nSubFam))
 population <- data.frame(SubFam = rep(1:nSubFam,each=nIndiv),
-                         Thresh = rep(rep(sample(0:100,nSubFam)),each=nIndiv),
+                         Thresh = rep(Threshs,each=nIndiv),
                          Status = rep(0,nSubFam*nIndiv))
 head(population)
 ```
@@ -31,8 +32,9 @@ for(genNum in 1:nGen)
 {
   temprows <- sample(1:nrow(population),nEachGen)
   population$Status[temprows] <- 
-    ifelse(population$Thresh[temprows]>Thresh[ceiling(genNum/(nGen/3))],1,0)
-  sumStatus[genNum] <- sum(population$Status)
+    ifelse(population$Thresh[temprows]
+           <Thresh[ceiling(genNum/(nGen/length(Thresh)))],1,0)
+  sumStatus[genNum] <- sum(population$Status)/(nIndiv*nSubFam)*100
 }
 
 head(population)
@@ -41,14 +43,54 @@ head(population)
 ```{r}
 ggplot(data=data.frame(sumStatus=sumStatus)) +
   geom_point(mapping=aes(x=1:length(sumStatus),y=sumStatus)) + 
-  geom_hline(mapping=aes(yintercept=10))
+  geom_hline(yintercept=Thresh) + 
+  geom_hline(yintercept=Threshs,linetype="dashed")
 ```
 
 This was a pretty simple simulation paper.
 
 
 
-
-
-
 Myerscough, M. R., and B. P. Oldroyd. "Simulation models of the role of genetic variability in social insect task allocation." Insectes Sociaux 51.2 (2004): 146-152.
+
+There are several apperant limitations of this study. First and foremost, their method of selecting an individual each time step was not realistic. That is, they selected a single individual at random, not at all based on how task allocaiton occurs in nature. Given that task allocation in nature generally takes place by exposure to some stimulus say, a pheromone, I propose a more realistic individual selection type. Each time step, every individual is assigned a randomly distributed number based on a distribution representative of their chance of exposure to the stimulus that may provoke task performance. Certain values on this distribution will represent a "yes" to exposure, in which case the threshold of the associated subfamily will be compared against the given stimulus strength.
+
+```{r}
+population$Status <- rep(0,nSubFam*nIndiv)
+```
+
+```{r}
+nGen <- 1200
+Thresh <- c(50,20,80)
+sumStatus <- 1
+
+for(genNum in 1:nGen)
+{
+  temprows <- ifelse(rnorm(nrow(population),0,1)>2.5,1,0)
+  
+  population$Status <- 
+    ifelse(temprows==1 & 
+      population$Thresh<Thresh[ceiling(genNum/(nGen/length(Thresh)))],1,population$Status)
+  population$Status <- 
+    ifelse(temprows==1 & 
+      population$Thresh>Thresh[ceiling(genNum/(nGen/length(Thresh)))],0,population$Status)
+  
+  sumStatus[genNum] <- sum(population$Status)/(nIndiv*nSubFam)*100
+}
+
+head(population)
+```
+
+
+```{r}
+ggplot(data=data.frame(sumStatus=sumStatus)) +
+  geom_point(mapping=aes(x=1:length(sumStatus),y=sumStatus)) + 
+  geom_hline(yintercept=Thresh) + 
+  geom_hline(yintercept=Threshs,linetype="dashed")
+```
+
+
+
+
+
+

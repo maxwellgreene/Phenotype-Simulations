@@ -1,5 +1,5 @@
 ---
-title: "ToDo's and Progress Tracking Notebook"
+title: "To-Do's and Progress Tracking Notebook"
 output: pdf_document
 ---
 
@@ -59,13 +59,13 @@ Lastly, I made major progress on the GA notebook. All that is left to do is expl
 
 #Thursday December 20th
 ###TO DO
-Today's ToDo: (Big Picture Day)
+Today's ToDo: (Big Picture Day)  
 
 1. Finalize GA notebook.
 2. See "looking forward", make plans for work during/after break.
 3. Review "Math Framework for Task Reportoire Expansion" paper and decide if that model fits.
   
-Looking Forward / Rolling ToDo:
+Looking Forward / Rolling ToDo:  
 
 1. Make larger plan for going forward as chart / pseudocode
 2. Look more into literature: how to apply GA to this project, [Annotated Bibliography Google Doc]("https://docs.google.com/document/d/1Eu_zMDIhtgkyTLazfbn7v8vJ5Pa9T_E6ZIkz92yFPWk/edit?usp=sharing")
@@ -84,14 +84,59 @@ Wisdom Teeth Removed, out of commission for a few days.
 Back to work.  
 
 ###TO DO
-Today's ToDo:
+Today's ToDo:  
+
 1. Work on ThresholdNotebook, see if I can draw any further conclusions on the work than the authors did.
 
-Rolling ToDo:
+Rolling ToDo:  
+
 1. Make larger plan for going forward as flowchart / pseudocode
 2. Look more into literature: how to apply GA to this project, [Annotated Bibliography Google Doc]("https://docs.google.com/document/d/1Eu_zMDIhtgkyTLazfbn7v8vJ5Pa9T_E6ZIkz92yFPWk/edit?usp=sharing"). Specifically, review "Math Framework for Task Reportoire Expansion" paper and decide if that model fits.
 
+###Progress
+Limited progress, I had a late start after travelling. Mostly reading papers and looking over ThresholdNotebook. I think I will have to look more into the biology of bees and the Queen's task performance before having workers.
 
+#Sunday January 6th
+
+###TO DO
+Today's ToDo:  
+
+1. Gather more information on the biology of bees and how the solitary queen starts a new nest and a colony.
+2. Work on ThresholdNotebook.
+
+Rolling ToDo:  
+
+1. Make larger plan for going forward as flowchart / pseudocode
+2. Look more into literature: how to apply GA to this project, [Annotated Bibliography Google Doc]("https://docs.google.com/document/d/1Eu_zMDIhtgkyTLazfbn7v8vJ5Pa9T_E6ZIkz92yFPWk/edit?usp=sharing"). Specifically, review "Math Framework for Task Reportoire Expansion" paper and decide if that model fits.
+
+###Progress
+I spent the day in the library with their available resources on social insects. I read "Humble bee, Bumblebee" about the practical biology of bumblebees and better understand the process of creating a bumblebee colony. I also read parts of "Evolution of Social Insect Colonies: Sex Allocation and Kin Selection" and "Social Insects: Ecology and Behavioral Biology" and I will continue to read these in the next few days.
+Some progress on ThresholdNotebook, mostly reading into the paper.
+
+#Monday January 7th 
+
+###TO DO
+Today's ToDo:  
+
+1. Continue research on biology of colonies. Specifically, look into the mechanisms and processes of caste transitions. Consider applicaiton to simulation.
+2. Work on, possibly finalize, ThresholdNotebook.
+
+Rolling ToDo:  
+
+1. Make larger plan for going forward as flowchart / pseudocode
+2. Look more into literature: how to apply GA to this project, [Annotated Bibliography Google Doc]("https://docs.google.com/document/d/1Eu_zMDIhtgkyTLazfbn7v8vJ5Pa9T_E6ZIkz92yFPWk/edit?usp=sharing"). Specifically, review "Math Framework for Task Reportoire Expansion" paper and decide if that model fits.
+
+###Progress
+Major progress on annotated bibliography. Lots of useful information gathered on caste transitions. 
+
+#Tuesday Januray 8th
+###TODO:
+Today's ToDo: 
+
+1. Finish ThresholdNotebook
+2. Investigate ThresholdNotebook implications
+
+###Progress
 
 
 
