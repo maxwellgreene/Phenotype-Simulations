@@ -127,16 +127,41 @@ Rolling ToDo:
 2. Look more into literature: how to apply GA to this project, [Annotated Bibliography Google Doc]("https://docs.google.com/document/d/1Eu_zMDIhtgkyTLazfbn7v8vJ5Pa9T_E6ZIkz92yFPWk/edit?usp=sharing"). Specifically, review "Math Framework for Task Reportoire Expansion" paper and decide if that model fits.
 
 ###Progress
+
 Major progress on annotated bibliography. Lots of useful information gathered on caste transitions. 
 
 #Tuesday Januray 8th
 ###TODO:
+
 Today's ToDo: 
 
 1. Finish ThresholdNotebook
 2. Investigate ThresholdNotebook implications
 
 ###Progress
+
+ThresholdNotebook finished.  
+
+Began investigating the idea of interacting rates of change (systems of differential equations).
+
+#Wednesday January 9th 
+###TODO:
+
+###Progress
+
+#Thursday January 10th - Tuesday January 15th
+  
+Weekend Vacation to Quebec, little tangible work done.
+
+#Wednesday January 16th 
+###TODO:
+Today's ToDo's:  
+
+1. Work on ColSim.R, decide if it will work for base of simulation
+2. Outline big picture for simulation
+
+###Progress
+Lots of time spent on tedious parts of ColSim.R. Specifically, using lapply to modify rows of a matrix. 
 
 
 

@@ -46,6 +46,7 @@ geneticPopulation: no visible global function definition for 'aes'
 geneticPopulation: no visible binding for global variable 'timestep'
 geneticPopulation: no visible binding for global variable 'avgFit'
 geneticPopulation: no visible binding for global variable 'speciesNum'
+geneticPopulation: no visible binding for global variable 'maxFit'
 geneticPopulation: no visible global function definition for 'theme'
 geneticPopulation: no visible global function definition for
   'geom_point'
@@ -55,6 +56,7 @@ geneticPopulation: no visible global function definition for
   'geom_contour'
 geneticPopulation: no visible binding for global variable 'Var1'
 geneticPopulation: no visible binding for global variable 'Var2'
+geneticSpecies: no visible global function definition for 'rnorm'
 geneticSpecies: no visible global function definition for 'mutate'
 geneticSpecies: no visible binding for global variable 'var1'
 geneticSpecies: no visible binding for global variable 'var2'
@@ -67,7 +69,10 @@ geneticSpecies: no visible binding for global variable 'minFit'
 geneticSpecies: no visible binding for global variable 'maxFit'
 Undefined global functions or variables:
   Var1 Var2 aes avgFit geom_contour geom_line geom_point ggplot maxFit
-  minFit mutate speciesNum theme timestep var1 var2
+  minFit mutate rnorm speciesNum theme timestep var1 var2
+Consider adding
+  importFrom("stats", "rnorm")
+to your NAMESPACE file.
 * checking Rd files ... OK
 * checking Rd metadata ... OK
 * checking Rd line widths ... OK

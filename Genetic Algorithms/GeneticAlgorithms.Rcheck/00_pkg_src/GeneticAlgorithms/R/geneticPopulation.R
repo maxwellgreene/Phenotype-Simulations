@@ -31,9 +31,12 @@ geneticPopulation <- function(fitfunc,species,gens,indivs,creation = "new", plot
   {
     ggplot(specData) +
     geom_line(mapping = aes(
-      x = timestep, y = avgFit,
-      color = as.character(speciesNum))) +
-      theme(legend.position = "none")
+              x = timestep, y = avgFit,
+              color = as.character(speciesNum))) +
+      geom_line(mapping = aes(
+        x = timestep, y = maxFit,
+        color = as.character(speciesNum))) +
+              theme(legend.position = "none")
   }else
   #========== PLOT maxFIT VALUES ==========
   if(plot == "maxVals")
@@ -42,8 +45,8 @@ geneticPopulation <- function(fitfunc,species,gens,indivs,creation = "new", plot
 
     ggplot(specData) +
       geom_point(mapping = aes(x = var1,y = var2, color = as.character(speciesNum))) +
-      #geom_contour(data=grid,mapping = aes(x=Var1,y=Var2,z=z),bins = 20)
       geom_contour(data=expand.grid(X,Y),
-                   mapping = aes(x=Var1,y=Var2,z=fitfunc(Var1,Var2)),bins = 20)
+                   mapping = aes(x=Var1,y=Var2,z=fitfunc(Var1,Var2)),bins = 20)+
+      theme(legend.position = "none")
   }
 }
