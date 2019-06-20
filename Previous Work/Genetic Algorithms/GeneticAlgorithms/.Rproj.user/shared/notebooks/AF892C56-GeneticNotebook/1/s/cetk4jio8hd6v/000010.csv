@@ -1,0 +1,2 @@
+"0","fitfunc <- function(x,y) {return(x^2+y^2)}"
+"0","geneticPopulation(fitfunc,species=10,indivs=5,gens=100,creation=""new"",plot=""maxVals"")"

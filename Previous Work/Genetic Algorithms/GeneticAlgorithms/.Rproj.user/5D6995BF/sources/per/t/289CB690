@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1545252066227.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1769446870",
+    "id" : "289CB690",
+    "lastKnownWriteTime" : 1547144130,
+    "last_content_update" : 1547144130286,
+    "path" : "~/GitHub/Phenotype-Simulations/Genetic Algorithms/GeneticNotebook.Rmd",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "10,227",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

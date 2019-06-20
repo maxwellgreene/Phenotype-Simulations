@@ -1,0 +1,2 @@
+"0","fitfunc <- function(x,y) {return(sin(x/2)-cos(y/2))}"
+"0","geneticPopulation(fitfunc,species=5,indivs=5,gens=100,creation=""new"",plot=""maxVals"")"

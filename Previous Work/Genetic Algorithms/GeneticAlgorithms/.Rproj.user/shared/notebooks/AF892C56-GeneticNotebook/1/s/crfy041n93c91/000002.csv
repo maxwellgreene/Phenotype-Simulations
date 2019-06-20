@@ -1,0 +1,3 @@
+"0","individual <- data.frame(var1=rnorm(1,0,1),"
+"0","                         var2=rnorm(1,0,1))"
+"0","individual"

@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1545318208331.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3779859336",
+    "id" : "22ABBD61",
+    "lastKnownWriteTime" : 1547753098,
+    "last_content_update" : 1547753098,
+    "path" : "~/GitHub/Phenotype-Simulations/Progress/ProgressNotebook.Rmd",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "55,92",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
