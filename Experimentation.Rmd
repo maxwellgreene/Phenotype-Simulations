@@ -1,0 +1,54 @@
+---
+title: "Sociality Simulation"
+output: html_notebook
+---
+
+This notebook is for experimentation with the colony simulation.
+
+```{r}
+#Set number of Days in a Cycle
+Day <- 0; nDayCycle <- 30;
+#Starting number of reproductives, workers and energy stores
+nReprod <- 1; nWorker <- 0; kStore <- 0;
+#Number of trips that workers and reproductives can make each day
+nTripReprod <- 1; nTripWorker <- 2;
+#Set amount of energy per trip that workers and reproductives make
+kTripWorker <- 5; kTripReprod <- 2;
+#Set amount of energy needed to create a worker and reproductive
+kCreateWorker <- 2; kCreateReprod <- 10;
+#Set mortality rates and rate of reprod vs. worker creation
+fMortRate <- .95; birthRate <- .8;
+
+#Create dataframe to store data.
+data <- data.frame(timestep=0,nReprod=nReprod,nWorker=nWorker,kStore=kStore)
+
+for (i in 1:nDayCycle)
+{
+  #Forage as much as you can/need with workers
+  #!!!!! When does Queen/reproductives stop foraging?
+  #!!!!! Add chance of dying
+  
+  #nWorker <- ceiling(nWorker*fMortRate); 
+  kStore <- kStore + nWorker * nTripWorker;
+  
+  if(nWorker < 2)
+  {
+    #nReprod <- ceiling(nReprod*fMortRate); 
+    kStore <- kStore + nReprod * nTripReprod;
+  }
+  
+  while (kStore > 0)
+  {
+    if(kStore > kCreateWorker && kStore > kCreateReprod)
+    {
+      temp <- runif(1,0,1) > birthRate
+      if(temp)
+      {kStore <- kStore - kCreateReprod; nReprod <- nReprod + 1;}
+      else{kStore <- kStore - kCreateWorker; nWorker <- nWorker + 1;}
+    }
+    else{break}
+  }
+  if(i%%1==0){cat(c("Day: ",i,"  kStore: ",kStore,"  nReprod: ",nReprod,"  nWorker: ",nWorker));print("");}
+  data <- rbind(data,list(i,nReprod,nWorker,kStore))
+}
+```
