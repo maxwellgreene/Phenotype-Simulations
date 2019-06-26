@@ -6,11 +6,9 @@ output: html_notebook
 library(tidyverse)
 ```
 
-This notebook is for experimentation with the colony simulation.
-
 ```{r}
 #Set number of Days in a Cycle
-Day <- 0; nDayCycle <- 50;
+Day <- 0; nDayCycle <- 30;
 #Starting number of reproductives, workers and energy stores
 nReprod <- 1; nWorker <- 0; kStore <- 0;
 #Number of trips that workers and reproductives can make each day
@@ -20,7 +18,8 @@ kTripWorker <- 5; kTripReprod <- 2;
 #Set amount of energy needed to create a worker and reproductive
 kCreateWorker <- 2; kCreateReprod <- 10;
 #Set mortality rates and rate of reprod vs. worker creation
-fMortRate <- .9; birthRate <- .6;
+fMortRate <- .7; birthRate <- .75;
+#Set max number of reproductives and workers per day per reproductive
 
 #Create dataframe to store data.
 data <- data.frame(timestep=0,nReprod=nReprod,nWorker=nWorker,kStore=kStore)
@@ -29,31 +28,36 @@ for (i in 1:nDayCycle)
 {
   #Forage as much as you can/need with workers
   #!!!!! When does Queen/reproductives stop foraging?
-  #!!!!! Add chance of dying
+  #!!!!! How to incorporate mortality rate?
   
-  nWorker <- ceiling(nWorker*fMortRate);
+  nWorker <- (nWorker*fMortRate);
   kStore <- kStore + nWorker * nTripWorker;
   
   if(nWorker < 2)
   {
-    nReprod <- ceiling(nReprod*fMortRate);
+    nReprod <- (nReprod*fMortRate);
     kStore <- kStore + nReprod * nTripReprod;
   }
   
+  #!!!!! How to birth the right amount? How much energy to use, save, etc.?
   while (kStore > 0)
   {
-    if(kStore > kCreateWorker && kStore > kCreateReprod)
+    if(kStore > kCreateReprod)
     {
       temp <- runif(1,0,1) > birthRate
-      if(temp)
-      {kStore <- kStore - kCreateReprod; nReprod <- nReprod + 1;}
-      else{kStore <- kStore - kCreateWorker; nWorker <- nWorker + 1;}
+      if(temp){kStore <- kStore - kCreateReprod;  nReprod <- nReprod + 1;}
+      else    {kStore <- kStore - kCreateWorker;  nWorker <- nWorker + 1;}
     }
-    else{break}
+    else{
+      if(kStore > kCreateWorker)
+      {kStore <- kStore - kCreateWorker;  nWorker <- nWorker + 1;}
+      else{break}
+    }
   }
-  if(i%%1==0){print(paste("Day: ",i,"  kStore: ",kStore,"  nReprod: ",nReprod,"  nWorker: ",nWorker));}
+  
+  #if(i%%1==0){print(paste("Day: ",i,"  kStore: ",kStore,"  nReprod: ",nReprod,"  nWorker: ",nWorker));}
   data <- rbind(data,list(i,nReprod,nWorker,kStore))
 }
 
-ggplot(data) + geom_line(mapping=aes(x=timestep,y=kStore)) + geom_line(mapping=aes(x=timestep,y=nReprod)) + geom_line(mapping=aes(x=timestep,y=nWorker))
+ggplot(data,aes(x=timestep)) + geom_line(aes(y=kStore,color="kStore")) + geom_line(aes(y=nReprod,color="nReprod")) + geom_line(aes(y=nWorker,color="nWorker")) + scale_colour_manual("",breaks = c("kStore", "nReprod", "nWorker"),values = c("kStore"="green","nReprod"="red","nWorker"="blue"))
 ```
