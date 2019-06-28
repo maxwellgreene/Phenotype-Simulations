@@ -2,15 +2,15 @@
 runSim <- function()
   {
 #Set number of Days in a Cycle
-Day <- 0; nDayCycle <- 20;
+Day <- 0; nDayCycle <- 300;
 #Starting number of reproductives, workers and energy stores
 nReprod <- 1; nWorker <- 0; kStore <- 0;
 #Number of trips that workers and reproductives can make each day
-nTripReprod <- 2; nTripWorker <- 2.5;
+nTripReprod <- 3; nTripWorker <- 2.5;
 #Set amount of energy per trip that workers and reproductives make
 kTripWorker <- 2; kTripReprod <- 2;
 #Set amount of energy needed to create a worker and reproductive
-kCreateWorker <- 3; kCreateReprod <- 3.5;
+kCreateWorker <- 5; kCreateReprod <- 5.5;
 
 #Create dataframe to store data.
 data <- data.frame(timestep=0,
@@ -33,20 +33,13 @@ for (i in 1:nDayCycle)
     kStore <- kStore + nReprod * nTripReprod;
   }
   
-  while (kStore > 0)
+  while (kStore > kCreateReprod | kStore>kCreateWorker)
   {
-    if(kStore > kCreateReprod)
-    {
-      if(birthReprod(nReprod,nWorker,Day,nDayCycle))
-      {kStore <- kStore - kCreateReprod;  nReprod <- nReprod+1;}
-      else    
-      {kStore <- kStore - kCreateWorker;  nWorker <- nWorker+1;}
-    }
-    else{
-      if(kStore > kCreateWorker)
-      {kStore <- kStore - kCreateWorker;  nWorker <- nWorker + 1;}
-      else{break}
-    }
+    if(kStore>kCreateReprod & birthReprod(nReprod,nWorker,Day,nDayCycle))
+    {kStore <- kStore - kCreateReprod;  nReprod <- nReprod + 1;}
+    
+    if(kStore>kCreateWorker & !birthReprod(nReprod,nWorker,Day,nDayCycle))
+    {kStore <- kStore - kCreateWorker;  nWorker <- nWorker + 1;}
   }
   
   if(i%%5==0){print(paste("Day: ",i,"  kStore: ",kStore,"  nReprod: ",nReprod,"  nWorker: ",nWorker));}

@@ -1,5 +1,5 @@
 ---
-title: "Sociality Simulation"
+title: "Sociality Simulation Outline & To-Do"
 output: html_notebook
 ---
 ```{r}
@@ -33,6 +33,8 @@ library(tidyverse)
 
 #Future additions:
 1. Add brood care or growth time
+
+
 
 ```{r}
 #Whether to birth a reproductive or a worker
