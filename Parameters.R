@@ -3,9 +3,9 @@
 birthReprod <- function(Day,nDayCycle,type="logical")
 {
   a <- 0; #Middle season reproductive
-  b <- 0; #Early season reproductive
-  c <- 1; #Late season reproductive
-  ratio <- .5;
+  b <- 1; #Early season reproductive
+  c <- .5; #Late season reproductive
+  ratio <- .8;
   
   #Set main variable as the progress through season
   x <- (Day/nDayCycle);
@@ -34,13 +34,13 @@ fMortRate <- function(Day,nDayCycle)
   #temp <- .4+2*(Day/nDayCycle-.5)^2;
   #return(temp);
   
-  a <- .5;   #Middle season
-  b <- .5;   #Early season
-  c <- .75; #Late season
+  a <- .75;   #Middle season
+  b <- .4;   #Early season
+  c <- .55; #Late season
   scale <- .8;
   
   #Set main variable as the progress through season
-  x <- (Day/nDayCycle);
+  x <- (Day/nDayCycle); 
   
   #Make a function of x, which will be the probability of producing a reproductive
   y <- function(x)

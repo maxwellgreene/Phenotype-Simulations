@@ -2,7 +2,7 @@
 runSim <- function()
 {
 #Set number of Days in a Cycle
-Day <- 0; nDayCycle <- 30;
+Day <- 0; nDayCycle <- 100;
 #Starting number of reproductives, workers and energy stores
 nReprod <- 1; nWorker <- 0; kStore <- 0;
 #Number of trips that workers and reproductives can make each day
