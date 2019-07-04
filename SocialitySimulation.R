@@ -1,3 +1,17 @@
+#This file contains four functions:
+#   runSimSoft - main simulation with manual param input
+#   runSimSoftRep - repeatedly run runSimSoft and average output
+#   runSimSoftAllEnv - repeatedly run runSimSoftRep with variety of colonies 
+#                      to test for best colony for given environment
+#   runSimSoftAllCol - repeatedly run runSimSoftRep with variety of environments 
+#                      to test for best environment for given colony
+
+
+#runSimSoft:
+#params
+#   enviro - length 4 vector of quantities with scalars for seasonal 
+#            mortality rate functions and a scaling number
+
 runSimSoft <- function(enviro,colony,nDayCycle=100,nReprod=1)
 {
   #Starting number of workers and energy stores
@@ -57,7 +71,7 @@ runSimSoftRep <- function(nRun,environment,colony)
 }
 
 #Find the most successful colony for a given environment
-runSimSoftAllEnv <- function(nRun,nEach,environment)
+runSimSoftAllEnv <- function(environment,nRun=5,nEach=3)
 {
   colony <- expand.grid(early=seq(0.3,.7,length.out = nEach),
                         middle=seq(0.3,.7,length.out = nEach),
@@ -68,6 +82,38 @@ runSimSoftAllEnv <- function(nRun,nEach,environment)
   {
     if(i%%10==0){print(i);}
     colony[i,"nReprod"] <- runSimSoftRep(nRun,environment,as.numeric(colony[i,1:4]))
+  }
+  return(colony)
+}
+
+#Find the most successful colony for a given environment and evolve populations
+runSimSoftAllEnvGen <- function(environment,nRun=2,nEach=2,nGen=3)
+{
+  colony <- expand.grid(early=seq(0.3,.7,length.out = nEach),
+                        middle=seq(0.3,.7,length.out = nEach),
+                        late=seq(0.3,.7,length.out = nEach),
+                        scale=seq(0.3,.7,length.out = nEach));
+  colony["nReprod"]<-NA
+  #First Generation
+  for(i in 1:nrow(colony))
+  {
+    if(i%%10==0){print(i);}
+    colony[i,"nReprod"] <- runSimSoftRep(nRun,environment,as.numeric(colony[i,1:4]))
+  }
+  
+  #Next generations
+  for(i in 2:nGen)
+  {
+    iBest <- colony[head(rev(order(colony$nReprod)),nrow(colony)/nEach),]
+    for(i in 1:nrow(iBest))
+    {iBestEvol <- iBest[i,]*rnorm(4,1,.1)}
+    colony[head(order(colony$nReprod),nrow(colony)/nEach),] <- iBestEvol
+    for(i in 1:nrow(colony))
+    {
+      if(i%%10==0){print(i);}
+      colony[i,"nReprod"] <- runSimSoftRep(nRun,environment,as.numeric(colony[i,1:4]))
+    }
+    
   }
   return(colony)
 }
