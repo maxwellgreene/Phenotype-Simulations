@@ -1,6 +1,6 @@
 ---
 title: "Sociality Simulation Outline & To-Do"
-output: html_notebook
+output: pdf_document#html_notebook
 ---
 ```{r}
 library(tidyverse)
