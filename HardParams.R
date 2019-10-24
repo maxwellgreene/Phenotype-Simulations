@@ -3,10 +3,10 @@
 #Specify you want a numerical probability, default is TRUE/FALSE for reproductive
 birthReprodHard <- function(Day,nDayCycle,type="logical")
 {
-  a <- .7;  #Middle season reproductive
-  b <- .3;  #Early season reproductive
-  c <- .7;  #Late season reproductive
-  ratio <- .6;
+  a <- 0.7;  #Middle season reproductive
+  b <- 0.5;  #Early season reproductive
+  c <- 0.8;  #Late season reproductive
+  ratio <- .5;
   
   #Set main variable as the progress through season
   x <- (Day/nDayCycle);
@@ -35,10 +35,10 @@ fMortRateHard <- function(Day,nDayCycle)
   #temp <- .4+2*(Day/nDayCycle-.5)^2;
   #return(temp);
   
-  a <- .4;   #Middle season MR
-  b <- .75;  #Early season MR
-  c <- .55;  #Late season MR
-  scale <- 0.850;
+  a <- .55;   #Middle season MR
+  b <- 1.0;  #Early season MR
+  c <- 0.1;  #Late season MR
+  scale <- 0.80;
   
   #Set main variable as the progress through season
   x <- (Day/nDayCycle); 

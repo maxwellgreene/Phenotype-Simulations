@@ -1,13 +1,18 @@
-#This file contains four functions:
+# This file contains the following functions:
 #   runSimSoft - main simulation with manual param input
 #   runSimSoftRep - repeatedly run runSimSoft and average output
 #   runSimSoftAllEnv - repeatedly run runSimSoftRep with variety of colonies 
 #                      to test for best colony for given environment
+#   runSimsoftallEnvGen - repeatedly run runSimSoftRep with variety of colonies 
+#                      to test for best colony for given environment. Evolve 
+#                      the best half for an umber of generations 
+#
 #   runSimSoftAllCol - repeatedly run runSimSoftRep with variety of environments 
 #                      to test for best environment for given colony
 
-#runSimSoft:
-#params
+
+# runSimSoft:
+# params
 #   enviro - length 4 vector of quantities with scalars for seasonal 
 #            mortality rate functions and a scaling number
 
@@ -43,7 +48,7 @@ runSimSoft <- function(enviro,colony,nDayCycle=100,nReprod=1)
       kStore <- kStore + nReprod * nTripReprod;
     }
     
-    while (kStore > kCreateReprod | kStore>kCreateWorker)
+    while (kStore > kCreateReprod | kStore > kCreateWorker)
     {
       if(kStore>kCreateReprod & birthReprodSoft(colony,Day,nDayCycle))
       {kStore <- kStore - kCreateReprod;  nReprod <- nReprod + 1;}
@@ -52,6 +57,7 @@ runSimSoft <- function(enviro,colony,nDayCycle=100,nReprod=1)
       {kStore <- kStore - kCreateWorker;  nWorker <- nWorker + 1;}
     }
   }
+  
   return(nReprod)
 }
 
@@ -62,13 +68,14 @@ runSimSoftRep <- function(nRun,environment,colony,hist=FALSE)
   #x<-matrix(1:nRun,nrow=nRun,ncol=1);
   #x<-apply(x,1,runSimSoft,environment,colony);
   x <- rep(0,nRun)
-  
+  if(hist){pb = txtProgressBar(min = 0, max = nRun, initial = 0)}
   for(i in 1:nRun)
   {
+    if(hist){setTxtProgressBar(pb,i)}
     x[i] <- runSimSoft(environment,colony);
   }
   
-  if(hist){hist(x,breaks=20,main=toString(c("Environment:",env,"Colony:",col)))}
+  if(hist){hist(x,breaks=20,main=toString(c("Environment:",environment,"Colony:",colony)))}
   #plot <- ggplot(data.frame(x=x))+geom_histogram(aes(x=x))
   
   return(mean(x))
@@ -93,43 +100,53 @@ runSimSoftAllEnv <- function(environment,nRun=5,nEach=3)
 #Find the most successful colony for a given environment and evolve populations
 runSimSoftAllEnvGen <- function(environment,nRun=2,nEach=2,nGen=3)
 {
-  colony <- expand.grid(early=seq(0.3,.7,length.out = nEach),
-                        middle=seq(0.3,.7,length.out = nEach),
-                        late=seq(0.3,.7,length.out = nEach),
-                        scale=seq(0.3,.7,length.out = nEach));
+  colony <- expand.grid(early=seq(0.2,0.8,length.out = nEach),
+                        middle=seq(0.2,0.8,length.out = nEach),
+                        late=seq(0.2,0.8,length.out = nEach),
+                        scale=seq(0.2,0.8,length.out = nEach));
   colony["nReprod"]<-NA
   colony["identity"]<-1:nrow(colony);idCount<-nrow(colony);
-  pb = txtProgressBar(min = 0, max = nrow(colony)*nGen, initial = 0)
   
   #First Generation
+  print("starting first generation")
+  pb1 = txtProgressBar(min = 0, max = nrow(colony), initial = 0)
   for(i in 1:nrow(colony))
   {
+    setTxtProgressBar(pb1,i)
     colony[i,"nReprod"] <- runSimSoftRep(nRun,environment,as.numeric(colony[i,1:4]))
   }
+  close(pb1)
   
   print("Colony after first generation:")
   print(colony)
   
+  pb2 = txtProgressBar(min = 0, max = nrow(colony)*(nGen), initial = 0)
+  
   #Next generations
+  print("starting child generations")
   for(i in 1:nGen)
   {
+    #Identify the best half of individuals
     iBestEvol <- colony[head(rev(order(colony$nReprod)),nrow(colony)/2),]
+    
     for(j in 1:nrow(iBestEvol))
     {
+      #Evolve these inviduals
       iBestEvol[j,] <- iBestEvol[j,]*c(rnorm(4,1,.1),1,NA)
+      #Assign them a new identity
       iBestEvol[j,"identity"]<-idCount;idCount<-idCount+1;
     }
     colony[head(order(colony$nReprod),nrow(colony)/2),] <- iBestEvol
     
     for(k in 1:nrow(colony))
     {
-      setTxtProgressBar(pb,(i-1)*nrow(colony)+k)
+      setTxtProgressBar(pb2,(i-1)*nrow(colony)+k)
       colony[k,"nReprod"] <- runSimSoftRep(nRun,environment,as.numeric(colony[k,1:4]))
     }
     #print(paste("Completed generation:",i,"   with mean nReprod of ",mean(colony$nReprod)))
   }
-  close(pb)
-  colony<-colony[order(colony$nReprod),]
+  close(pb2)
+  colony<-colony[order(colony$nReprod,decreasing=TRUE),]
   return(colony)
 }
 
@@ -147,3 +164,17 @@ runSimSoftAllCol <- function(nRun,nEach,colony)
   }
   return(environment)
 }
+
+graphColony <- function(colony)
+{
+  plot_ly(x=colony$early, y=colony$middle, z=colony$late, type="scatter3d", mode="markers", color=colony$scale) %>% 
+    layout(title = "Number of Reproductives as a Function of Colony",
+      scene = list(
+        xaxis = list(title = "Early Season"),
+        yaxis = list(title = "Middle Season"),
+        zaxis = list(title = "Late Season")))
+}
+
+
+
+
