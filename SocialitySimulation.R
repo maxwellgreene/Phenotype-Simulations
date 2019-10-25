@@ -10,7 +10,6 @@
 #   runSimSoftAllCol - repeatedly run runSimSoftRep with variety of environments 
 #                      to test for best environment for given colony
 
-
 # runSimSoft:
 # params
 #   enviro - length 4 vector of quantities with scalars for seasonal 
@@ -100,6 +99,9 @@ runSimSoftAllEnv <- function(environment,nRun=5,nEach=3)
 #Find the most successful colony for a given environment and evolve populations
 runSimSoftAllEnvGen <- function(environment,nRun=2,nEach=2,nGen=3)
 {
+  
+  flog.info("Creating colony")
+  
   colony <- expand.grid(early=seq(0.2,0.8,length.out = nEach),
                         middle=seq(0.2,0.8,length.out = nEach),
                         late=seq(0.2,0.8,length.out = nEach),
@@ -107,9 +109,12 @@ runSimSoftAllEnvGen <- function(environment,nRun=2,nEach=2,nGen=3)
   colony["nReprod"]<-NA
   colony["identity"]<-1:nrow(colony);idCount<-nrow(colony);
   
-  #First Generation
-  print("starting first generation")
   pb1 = txtProgressBar(min = 0, max = nrow(colony), initial = 0)
+  pb2 = txtProgressBar(min = 0, max = nrow(colony)*(nGen), initial = 0)
+  
+  #First Generation
+  #flog.info("Starting INITIAL generation")
+  
   for(i in 1:nrow(colony))
   {
     setTxtProgressBar(pb1,i)
@@ -117,18 +122,14 @@ runSimSoftAllEnvGen <- function(environment,nRun=2,nEach=2,nGen=3)
   }
   close(pb1)
   
-  print("Colony after first generation:")
-  print(colony)
-  
-  pb2 = txtProgressBar(min = 0, max = nrow(colony)*(nGen), initial = 0)
-  
   #Next generations
-  print("starting child generations")
+  print("Starting SUBSEQUENT generations")
   for(i in 1:nGen)
   {
     #Identify the best half of individuals
     iBestEvol <- colony[head(rev(order(colony$nReprod)),nrow(colony)/2),]
     
+    #Process these individuals
     for(j in 1:nrow(iBestEvol))
     {
       #Evolve these inviduals
@@ -136,18 +137,22 @@ runSimSoftAllEnvGen <- function(environment,nRun=2,nEach=2,nGen=3)
       #Assign them a new identity
       iBestEvol[j,"identity"]<-idCount;idCount<-idCount+1;
     }
+    
+    #Replace the worst half with evolved best half
     colony[head(order(colony$nReprod),nrow(colony)/2),] <- iBestEvol
     
+    #Redo simulation for all individuals
     for(k in 1:nrow(colony))
     {
       setTxtProgressBar(pb2,(i-1)*nrow(colony)+k)
       colony[k,"nReprod"] <- runSimSoftRep(nRun,environment,as.numeric(colony[k,1:4]))
     }
-    #print(paste("Completed generation:",i,"   with mean nReprod of ",mean(colony$nReprod)))
+    #flog.info(paste("Completed generation:",i,"   with mean nReprod of ",mean(colony$nReprod)))
   }
+  
   close(pb2)
-  colony<-colony[order(colony$nReprod,decreasing=TRUE),]
-  return(colony)
+  colonyOrdered<-colony[order(colony$nReprod,decreasing=TRUE),]
+  return(colonyOrdered)
 }
 
 #Find the best environment for a given colony
@@ -174,7 +179,4 @@ graphColony <- function(colony)
         yaxis = list(title = "Middle Season"),
         zaxis = list(title = "Late Season")))
 }
-
-
-
 
