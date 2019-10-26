@@ -1,4 +1,0 @@
-"0","parent <- data.frame(var1=rnorm(1,0,.5),"
-"0","                     var2=rnorm(1,0,.5))"
-"0","child <- data.frame(var1=rnorm(1,0,.5),"
-"0","                    var2=rnorm(1,0,.5))"

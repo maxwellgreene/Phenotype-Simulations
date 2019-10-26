@@ -1,2 +1,0 @@
-"0","fitfunc <- function(x,y)"
-"0","{return((y*sin(x)+x*cos(y)))}"

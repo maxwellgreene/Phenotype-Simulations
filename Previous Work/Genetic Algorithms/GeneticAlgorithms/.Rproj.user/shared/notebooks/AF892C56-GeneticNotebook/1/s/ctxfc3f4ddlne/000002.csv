@@ -1,8 +1,0 @@
-"0","numIndivs <- 2"
-"0","makespecies <- function(numIndivs)"
-"0","{"
-"0","  species <- data.frame(var1=rnorm(numIndivs,0,1),"
-"0","                        var2=rnorm(numIndivs,0,1))"
-"0","  return(species)"
-"0","}"
-"0","makespecies(numIndivs)"

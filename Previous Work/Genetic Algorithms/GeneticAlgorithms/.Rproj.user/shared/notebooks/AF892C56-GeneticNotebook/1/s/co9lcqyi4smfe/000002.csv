@@ -1,4 +1,0 @@
-"0","parent <- data.frame(var1=rnorm(1,0,.5),"
-"0","                     var2=rnorm(1,0,.5))"
-"0","offspring <- data.frame(var1=parent$var1*rnorm(1,1,.1),"
-"0","                        var2=parent$var2*rnorm(1,1,.1))"
