@@ -1,3 +1,10 @@
+
+
+
+################################################################
+###=====================  birthReprod  ======================###
+################################################################
+
 birthReprod <- function(colony,Day,nDayCycle,type = "logical")
 {
   #Set main variable as the progress through season
@@ -15,6 +22,10 @@ birthReprod <- function(colony,Day,nDayCycle,type = "logical")
   if(type=="numeric"){return(ynorm)}
   if(type=="logical"){return(runif(length(Day),0,1) < ynorm)}
 }
+
+################################################################
+###======================  fMortRate  =======================###
+################################################################
 
 fMortRate <- function(enviro,Day,nDayCycle,type = "numeric")
 {
@@ -36,8 +47,17 @@ fMortRate <- function(enviro,Day,nDayCycle,type = "numeric")
   if(type=="logical"){return(runif(length(Day),0,1) < ynorm)}
 }
 
+
+################################################################
+###====================  isReprodForage  ====================###
+################################################################
+
 #Set parameters for when reproductives stop foraging
-isReprodForage <- function(nWorker)
+isReprodForage <- function(nWorker,type="l2")
 {
-  return(ifelse(nWorker<2,TRUE,FALSE))
+  if(type=="l2")
+  {
+    return(ifelse(nWorker<2,TRUE,FALSE))
+  }
+    
 }

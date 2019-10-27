@@ -1,0 +1,54 @@
+---
+title: "Sociality Simulation Experimentation"
+author: Maxwell Greene
+output: pdf_document
+---
+
+```{r,include=FALSE}
+library(ggplot2)
+library(plot3D)
+library(gridExtra)
+load(file="SocSimNBWS.RData")
+figW <- 7; figH <- 3.5; figA = "center"
+```
+
+```{r setup}
+library(knitr)
+library(rgl)
+knit_hooks$set(webgl = hook_webgl)
+```
+
+
+```{r,fig.width=figW,fig.height=figH,fig.align = figA,warning=FALSE,message=FALSE}
+colony1 <- runSimMan(env1,col1)
+colony2 <- runSimMan(env2,col2)
+VisCol1 <- VisCol(colony1,env1,col1)
+VisCol2 <- VisCol(colony2,env2,col2)
+grid.arrange(VisCol1, VisCol2, ncol = 2)
+```
+
+```{r,fig.width=figW,fig.height=figH,fig.align = figA,warning=FALSE,message=FALSE}
+#nReprods1 <- runSimRepMan(100,env1,col1)
+#nReprods2 <- runSimRepMan(100,env2,col2)
+VisRepHist1 <- VisRepHist(nReprods1,env1,col1)
+#VisRepHist2 <- VisRepHist(nReprods2,env2,col2)
+#grid.arrange(VisCol1, VisCol2, ncol = 2)
+```
+
+```{r,fig.width=figW,fig.height=figH,fig.align = figA,warning=FALSE,message=FALSE}
+#population1 <- runSimAllEnvGen(env1,nRun=5,nEach=3,nGen=3)
+#population2 <- runSimAllEnvGen(env2,nRun=5,nEach=3,nGen=3)
+VisPopParams3d1 <- VisPopParams3d(population1)
+VisPopParams3d2 <- VisPopParams3d(population2)
+grid.arrange(grobs = list(VisPopParams3d1, VisPopParams3d2), ncol = 2,top = "Main Title")
+```
+
+
+```{r testgl, webgl=TRUE}
+x <- population1$early
+y <- population1$middle
+z <- population1$late
+plot3d(x, y, z, col=population1$nReprod)
+```
+
+

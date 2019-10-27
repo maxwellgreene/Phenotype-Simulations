@@ -19,15 +19,16 @@
 # 3. comment 'n' shit
 # 4. change names to be more particular
 
+# See Desmos graphs here https://www.desmos.com/calculator/j5nisf3tcp 
+
+################################################################
+###========================  runSim  ========================###
+################################################################
 
 # runSim:
 # params
 #   enviro - length 4 vector of quantities with scalars for seasonal
 #            mortality rate functions and a scaling number
-
-################################################################
-###========================  runSim  ========================###
-################################################################
 
 runSim <- function(enviro,colony,nDayCycle=100,nReprod=1)
 {
@@ -77,7 +78,7 @@ runSim <- function(enviro,colony,nDayCycle=100,nReprod=1)
 ###======================  runSimMan  =======================###
 ################################################################
 
-runSimMan <- function(enviro, colony, graphType = "seasonal",colParams = c(0,100,1,0,0,2,2.5,2,2,5,5.5))
+runSimMan <- function(enviro, colony, colParams = c(0,100,1,0,0,2,2.5,2,2,5,5.5))
 {
   #Default command:
   #colParams <- c(0,100,1,0,0,2,2.5,2,2,5,5.5)
@@ -124,7 +125,7 @@ runSimMan <- function(enviro, colony, graphType = "seasonal",colParams = c(0,100
       {kStore <- kStore - kCreateWorker;  nWorker <- nWorker + 1;}
     }
     
-    if(i%%50==0){print(paste("Day: ",i,"  kStore: ",kStore,"  nReprod: ",nReprod,"  nWorker: ",nWorker));}
+    #if(i%%10==0){print(paste("Day: ",i,"  kStore: ",kStore,"  nReprod: ",nReprod,"  nWorker: ",nWorker));}
     data <- rbind(data,list(i,nReprod,nWorker,kStore))
   }
   
@@ -160,13 +161,12 @@ runSimRep <- function(nRun,environment,colony)
 runSimRepMan <- function(nRun,environment,colony)
 {
   x <- rep(0,nRun);
-  PB = txtProgressBar(min = 0, max = nRun, initial = 0);
+  #PB = txtProgressBar(min = 0, max = nRun, initial = 0);
   for(i in 1:nRun)
   {
-    setTxtProgressBar(PB,i);
+    #setTxtProgressBar(PB,i);
     x[i] <- runSim(environment,colony);
   }
-  hist(x,breaks=20,main=toString(c("Environment:",environment,"Colony:",colony)))
   return(x)
 }
 
@@ -197,7 +197,6 @@ runSimAllEnv <- function(environment,nRun=5,nEach=3)
 #Find the most successful colony for a given environment and evolve populations
 runSimAllEnvGen <- function(environment,nRun=2,nEach=2,nGen=3)
 {
-  
   colony <- expand.grid(early=seq(0.2,0.8,length.out = nEach),
                         middle=seq(0.2,0.8,length.out = nEach),
                         late=seq(0.2,0.8,length.out = nEach),
@@ -216,7 +215,7 @@ runSimAllEnvGen <- function(environment,nRun=2,nEach=2,nGen=3)
   for(i in 1:nrow(colony))
   {
     setTxtProgressBar(onegenPB,i)
-    colony[i,"nReprod"] <- runSimSoftRep(nRun,environment,as.numeric(colony[i,1:4]))
+    colony[i,"nReprod"] <- runSimRep(nRun,environment,as.numeric(colony[i,1:4]))
   }
   close(onegenPB)
   
@@ -244,7 +243,7 @@ runSimAllEnvGen <- function(environment,nRun=2,nEach=2,nGen=3)
     {
       #Update progress bar for subsequent generations
       setTxtProgressBar(subgenPB,(i-1)*nrow(nBestEvol)+k)
-      nBestEvol[k,"nReprod"] <- runSimSoftRep(nRun,environment,as.numeric(nBestEvol[k,1:4]))
+      nBestEvol[k,"nReprod"] <- runSimRep(nRun,environment,as.numeric(nBestEvol[k,1:4]))
     }
     
     #Replace the worst half with evolved best half
@@ -274,3 +273,6 @@ runSimAllCol <- function(nRun,nEach,colony)
   }
   return(environment)
 }
+
+
+
