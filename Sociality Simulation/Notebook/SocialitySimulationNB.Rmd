@@ -28,19 +28,21 @@ grid.arrange(VisCol1, VisCol2, ncol = 2)
 ```
 
 ```{r,fig.width=figW,fig.height=figH,fig.align = figA,warning=FALSE,message=FALSE}
-#nReprods1 <- runSimRepMan(100,env1,col1)
-#nReprods2 <- runSimRepMan(100,env2,col2)
+#nReprods1 <- runSimRepMan(1000,env1,col1)
+#nReprods2 <- runSimRepMan(1000,env2,col2)
 VisRepHist1 <- VisRepHist(nReprods1,env1,col1)
-#VisRepHist2 <- VisRepHist(nReprods2,env2,col2)
-#grid.arrange(VisCol1, VisCol2, ncol = 2)
+VisRepHist2 <- VisRepHist(nReprods2,env2,col2)
+#grid.arrange(VisRepHist1, VisRepHist2, ncol = 2)
 ```
 
 ```{r,fig.width=figW,fig.height=figH,fig.align = figA,warning=FALSE,message=FALSE}
 #population1 <- runSimAllEnvGen(env1,nRun=5,nEach=3,nGen=3)
 #population2 <- runSimAllEnvGen(env2,nRun=5,nEach=3,nGen=3)
-VisPopParams3d1 <- VisPopParams3d(population1)
-VisPopParams3d2 <- VisPopParams3d(population2)
-grid.arrange(grobs = list(VisPopParams3d1, VisPopParams3d2), ncol = 2,top = "Main Title")
+#VisPopParams3d1 <- VisPopParams3d(population1)
+VisPopParams3d(population1)
+#VisPopParams3d2 <- VisPopParams3d(population2)
+VisPopParams3d(population2)
+#grid.arrange(grobs = list(VisPopParams3d1, VisPopParams3d2), ncol = 2,top = "Main Title")
 ```
 
 
@@ -50,5 +52,8 @@ y <- population1$middle
 z <- population1$late
 plot3d(x, y, z, col=population1$nReprod)
 ```
+
+
+
 
 

@@ -111,7 +111,7 @@ runSimMan <- function(enviro, colony, colParams = c(0,100,1,0,0,2,2.5,2,2,5,5.5)
     #Are the reproductives foraging?
     if(isReprodForage(nWorker=nWorker))
     {
-      #If so, send them out for some pollen & nectar
+      #If so, send them out for some kStore
       nReprod <- ceiling(nReprod * fMortRate(enviro,Day,nDayCycle));
       kStore <- kStore + nReprod * nTripReprod;
     }
@@ -161,10 +161,10 @@ runSimRep <- function(nRun,environment,colony)
 runSimRepMan <- function(nRun,environment,colony)
 {
   x <- rep(0,nRun);
-  #PB = txtProgressBar(min = 0, max = nRun, initial = 0);
+  PB = txtProgressBar(min = 0, max = nRun, initial = 0);
   for(i in 1:nRun)
   {
-    #setTxtProgressBar(PB,i);
+    setTxtProgressBar(PB,i);
     x[i] <- runSim(environment,colony);
   }
   return(x)
@@ -177,10 +177,10 @@ runSimRepMan <- function(nRun,environment,colony)
 #Find the most successful colony for a given environment
 runSimAllEnv <- function(environment,nRun=5,nEach=3)
 {
-  colony <- expand.grid(early=seq(0.3,.7,length.out = nEach),
+  colony <- expand.grid(early =seq(0.3,.7,length.out = nEach),
                         middle=seq(0.3,.7,length.out = nEach),
-                        late=seq(0.3,.7,length.out = nEach),
-                        scale=seq(0.3,.7,length.out = nEach));
+                        late  =seq(0.3,.7,length.out = nEach),
+                        scale =seq(0.3,.7,length.out = nEach));
   colony["nReprod"]<-NA
   
   for(i in 1:nrow(colony))
@@ -209,7 +209,7 @@ runSimAllEnvGen <- function(environment,nRun=2,nEach=2,nGen=3)
   onegenPB = txtProgressBar(min = 0, max = nrow(colony), initial = 0)
   
   #First Generation
-  print("Starting INITIAL generation")
+  print("Performing INITIAL generation")
   
   #Assess Fitness
   for(i in 1:nrow(colony))
@@ -220,7 +220,7 @@ runSimAllEnvGen <- function(environment,nRun=2,nEach=2,nGen=3)
   close(onegenPB)
   
   #Next generations
-  print("Starting SUBSEQUENT generations")
+  print("Performing SUBSEQUENT generations")
   
   subgenPB = txtProgressBar(min = 0, max = nrow(colony)*(nGen)/2, initial = 0)
   

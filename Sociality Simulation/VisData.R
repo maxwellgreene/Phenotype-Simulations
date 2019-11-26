@@ -4,7 +4,7 @@
 ###========================  VisCol  ========================###
 ################################################################
 
-#Visualize single colony dynamcs throughtu the season
+#Visualize single colony dynamcs throughout the season
 VisCol <- function(colonyData,enviro,colony,colParams = c(0,100,1,0,0,2,2.5,2,2,5,5.5))
 {
   #Set number of Days in a Cycle
@@ -15,7 +15,7 @@ VisCol <- function(colonyData,enviro,colony,colParams = c(0,100,1,0,0,2,2.5,2,2,
   nTripReprod <- colParams[6]; nTripWorker <- colParams[7];
   #Set amount of energy per trip that workers and reproductives make
   kTripWorker <- colParams[8]; kTripReprod <- colParams[9];
-  #Set amount of energy needed to create a worker and reproductive
+  #Set amount of energy needer and reproductive
   kCreateWorker <- colParams[10]; kCreateReprod <- colParams[11];
   
   #Requires running runSimMan first
@@ -69,12 +69,9 @@ VisPopParams3d <- function(population)
   #              y=population$middle,
   #              z=population$late,
   #              xlab = "Early", ylab = "Middle", zlab = "Late")
-  
-  return(plot3D::scatter3D(population$early,population$middle,population$late,colvar = population$nReprod))
+  scatter3D(population$early,population$middle,population$late,colvar = population$nReprod)
+  #return(plot3D::scatter3D(population$early,population$middle,population$late,colvar = population$nReprod))
 }
-
-
-
 
 
 
