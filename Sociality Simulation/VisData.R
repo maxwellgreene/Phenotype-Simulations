@@ -63,15 +63,74 @@ VisPopParamsPlotly <- function(population)
 
 # Plot the results of a single-generation or evolved population
 # in a static scatterplot3d plot (for notebooks)
-VisPopParams3d <- function(population)
+VisPopParams3d <- function(pop)
 {
   #plot <- scatterplot3d(x=population$early,
   #              y=population$middle,
   #              z=population$late,
   #              xlab = "Early", ylab = "Middle", zlab = "Late")
-  scatter3D(population$early,population$middle,population$late,colvar = population$nReprod)
+  scatter3D(pop$early,pop$middle,pop$late,colvar = pop$nReprod)
   #return(plot3D::scatter3D(population$early,population$middle,population$late,colvar = population$nReprod))
 }
+
+################################################################
+###======================  ggConvert  =======================###
+################################################################
+
+#converts population into standard ggenealogy data.frame
+ggConvert <- function(popDF,varname)
+{
+  #colnames(popDF) <- c("early","middle","late","scale","nReprod","child","parent","generation")
+  popDF <- popDF[c("child","parent",varname)]
+  popDF$child <- as.character(popDF$child)
+  popDF$parent <- as.character(popDF$parent)
+  tempdf <- data.frame(child="0",parent="NA",tempname=0)
+  names(tempdf)[names(tempdf) == "tempname"] <- varname
+  popDF <- rbind(popDF,tempdf)
+  return(popDF)
+}
+
+################################################################
+###======================  VisLinPath  ======================###
+################################################################
+
+#Plot a visualpath between individuals in a population
+VisLinPath <- function(popDF,to,from,varname,varname2)
+{
+  #colnames(popDF) <- c("early","middle","late","scale","nReprod","child","parent","generation")
+  popDF <- popDF[c("child","parent",varname,varname2)]
+  popDF$child <- as.character(popDF$child);
+  popDF$parent <- as.character(popDF$parent);
+  tempdf <- data.frame(child="0",parent="NA",tempname=-1,tempname2=-1)
+  names(tempdf)[names(tempdf) == "tempname"] <- varname
+  names(tempdf)[names(tempdf) == "tempname2"] <- varname2
+  
+  popDF <- rbind(popDF,tempdf)
+  
+  popIG <- dfToIG(popDF)
+  path <- getPath(to,from,popIG,popDF,varname)
+  plotPathOnAll(path,popDF,popIG,varname,varname2,pathEdgeCol = "orange") + 
+    ggplot2::xlab(varname) +
+    ggplot2::ylab(varname2)
+  #plotPathOnAll(path,popDF,popIG,varname)
+  #plotPath(path,popDF,varname)
+}
+
+################################################################
+###======================  VisAncTree  ======================###
+################################################################
+
+#Plot a n ancestral tree of all individuals in a population
+VisAncTree<- function(popDF,indiv,mAnc=0,mDes=20)
+{
+  popDF <- ggConvert(popDF,"nReprod")
+  plotAncDes(indiv, popDF, mAnc = mAnc, mDes = mDes)
+}
+
+
+
+
+
 
 
 

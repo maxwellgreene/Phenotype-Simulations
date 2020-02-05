@@ -106,14 +106,14 @@ runSimMan <- function(enviro, colony, colParams = c(0,100,1,0,0,2,2.5,2,2,5,5.5)
     
     #Forage as much as you can/need with workers
     nWorker <- ceiling(nWorker*fMortRate(enviro,Day,nDayCycle));
-    kStore <- kStore + nWorker * nTripWorker;
+    kStore <- kStore + nWorker * nTripWorker * kTripWorker;
     
     #Are the reproductives foraging?
     if(isReprodForage(nWorker=nWorker))
     {
       #If so, send them out for some kStore
       nReprod <- ceiling(nReprod * fMortRate(enviro,Day,nDayCycle));
-      kStore <- kStore + nReprod * nTripReprod;
+      kStore <- kStore + nReprod * nTripReprod * kTripReprod;
     }
     
     while (kStore > kCreateReprod | kStore>kCreateWorker)
@@ -191,7 +191,7 @@ runSimAllEnv <- function(environment,nRun=5,nEach=3)
 }
 
 ################################################################
-###=================  runSimSoftAllEnvGen  ==================###
+###===================  runSimAllEnvGen  ====================###
 ################################################################
 
 #Find the most successful colony for a given environment and evolve populations
@@ -256,6 +256,91 @@ runSimAllEnvGen <- function(environment,nRun=2,nEach=2,nGen=3)
 }
 
 ################################################################
+###==================  runSimAllEnvGenLin  ==================###
+################################################################
+# Find the most successful colony for a given environment, evolve populations
+# and track lineages
+runSimAllEnvGenLin <- function(environment,nRun=2,nEach=2,nGen=3)
+{
+  colony <- expand.grid(early=seq(0.2,0.8,length.out = nEach),
+                        middle=seq(0.2,0.8,length.out = nEach),
+                        late=seq(0.2,0.8,length.out = nEach),
+                        scale=seq(0.2,0.8,length.out = nEach));
+  
+  #Initialize nReprod to NA for all individuals
+  colony["nReprod"]<-NA
+  #Initialize identities for all individuals
+  colony["child"]<-1:nrow(colony);idCount<-nrow(colony);
+  #Initialize lineages for all individuals
+  colony["parent"]<-0;
+  #Initialize generation number for all individuals
+  colony["generation"]<-rep(0,length(colony[,1]))
+  
+  onegenPB = txtProgressBar(min = 0, max = nrow(colony), initial = 0)
+  
+  #First Generation
+  print("Performing INITIAL generation")
+  
+  #Assess Fitness
+  for(i in 1:nrow(colony))
+  {
+    setTxtProgressBar(onegenPB,i)
+    colony[i,"nReprod"] <- runSimRep(nRun,environment,as.numeric(colony[i,1:4]))
+  }
+  close(onegenPB)
+  
+  #Next generations
+  print("Performing SUBSEQUENT generations")
+  subgenPB = txtProgressBar(min = 0, max = nrow(colony)*(nGen)/2, initial = 0)
+  
+  fullCol <- colony
+  
+  for(i in 1:nGen)
+  {
+    #Identify the best half of individuals
+    nBestEvol <- colony[head(rev(order(colony$nReprod)),nrow(colony)/2),]
+    
+    #Process these individuals
+    for(j in 1:nrow(nBestEvol))
+    {
+      #Update lineage to these individuals
+        #nBestEvol$lineage[j] <-list(append(unlist(nBestEvol[j,"parent"]),nBestEvol[j,"child"]))
+      
+      #Add generation number to new individuals
+      nBestEvol$generation[j] <- i
+      #Add parent under "lineage" to individuals
+      nBestEvol$parent[j] <- nBestEvol[j,"child"]
+      #Assign them a new identity
+      idCount <- idCount+1
+      nBestEvol$child[j]<-idCount
+      #Evolve these inviduals
+      nBestEvol[j,1:4] <- nBestEvol[j,1:4]*c(rnorm(4,1,.1))
+    }
+    
+    #Assess fitness of nBestEvol before attaching to colony
+    for(k in 1:nrow(nBestEvol))
+    {
+      #Update progress bar for subsequent generations
+      setTxtProgressBar(subgenPB,(i-1)*nrow(nBestEvol)+k)
+      nBestEvol[k,"nReprod"] <- runSimRep(nRun,environment,as.numeric(nBestEvol[k,1:4]))
+    }
+    
+    #Replace the worst half with evolved best half
+    colony[head(order(colony$nReprod),nrow(colony)/2),] <- nBestEvol
+    fullCol <- rbind(fullCol,nBestEvol)
+    
+    #Update lineages on survived individuals
+      #for(l in 1:nrow(colony))
+      #{colony$lineage[l] <-list(append(unlist(colony[l,"lineage"]),colony[l,"identity"]))}
+  }
+  
+  close(subgenPB)
+  colonyOrdered<-colony[order(colony$nReprod,decreasing=TRUE),]
+  #return(colonyOrdered)
+  return(fullCol)
+}
+
+################################################################
 ###=====================  runSimAllCol  =====================###
 ################################################################
 
@@ -263,9 +348,9 @@ runSimAllEnvGen <- function(environment,nRun=2,nEach=2,nGen=3)
 runSimAllCol <- function(nRun,nEach,colony)
 {
   environment <- expand.grid(early=seq(0.3,.7,length.out = nEach),
-                        middle=seq(0.3,.7,length.out = nEach),
-                        late=seq(0.3,.7,length.out = nEach),
-                        scale=seq(0.8,.9,length.out = nEach));
+                             middle=seq(0.3,.7,length.out = nEach),
+                             late=seq(0.3,.7,length.out = nEach),
+                             scale=seq(0.8,.9,length.out = nEach));
   environment["nReprod"]<-NA
   for(i in 1:nrow(environment))
   {
@@ -273,6 +358,9 @@ runSimAllCol <- function(nRun,nEach,colony)
   }
   return(environment)
 }
+
+
+
 
 
 
