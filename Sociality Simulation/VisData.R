@@ -41,6 +41,41 @@ VisRepHist <- function(nReprods,enviro,colony)
        main=paste("Environment: (",toString(enviro),") \nColony: (",toString(colony),")",sep=""))
 }
 
+
+
+################################################################
+###======================  VisDenComp  ======================###
+################################################################
+VisDenVect <- function(vect1,vect2,vect3,vect4)
+{
+  dat <- data.frame(vects = c(vect1,vect2,vect3,vect4), divs = rep(c("a", "b","c","d"), each = length(vect1)))
+  ggplot(dat, aes(x = vects, fill = divs)) + geom_density(alpha = 0.5)
+}
+
+################################################################
+###======================  VisDensity  ======================###
+################################################################
+VisDensity <- function(temp,id,numplot,legend = FALSE)
+{
+  params <- temp[[1]]
+  results <- temp[[2]]
+  vects <- NULL #temp[[2]][[id]],temp[[2]][[id+1]],temp[[2]][[id+2]],temp[[2]][[id+3]],temp[[2]][[id+4]])
+  
+  for(i in 1:numplot)
+  {
+    vects <- c(vects,as.vector(results[[id+i-1]]))
+  }
+  
+  df <- data.frame(vects = vects, 
+                   divs  = as.character(rep(1:numplot,each = length(results[[1]]) )))
+  
+  plot <- ggplot(df, aes(x = vects, fill = divs)) + geom_density(alpha = 0.25) +
+  if(!legend)
+  {plot <- plot + theme(legend.title = element_blank(), legend.position = "none")}
+  
+  plot
+}
+
 ################################################################
 ###==================  VisPopParamsPlotly  ==================###
 ################################################################
@@ -126,9 +161,6 @@ VisAncTree<- function(popDF,indiv,mAnc=0,mDes=20)
   popDF <- ggConvert(popDF,"nReprod")
   plotAncDes(indiv, popDF, mAnc = mAnc, mDes = mDes)
 }
-
-
-
 
 
 

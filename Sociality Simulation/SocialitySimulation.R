@@ -106,16 +106,15 @@ runSimMan <- function(enviro, colony, colParams = c(0,100,1,0,0,2,2.5,2,2,5,5.5)
     
     #Forage as much as you can/need with workers
     nWorker <- ceiling(nWorker*fMortRate(enviro,Day,nDayCycle));
-    kStore <- kStore + nWorker * nTripWorker * kTripWorker;
+    kStore <- kStore + nWorker * nTripWorker;
     
     #Are the reproductives foraging?
     if(isReprodForage(nWorker=nWorker))
     {
       #If so, send them out for some kStore
       nReprod <- ceiling(nReprod * fMortRate(enviro,Day,nDayCycle));
-      kStore <- kStore + nReprod * nTripReprod * kTripReprod;
+      kStore <- kStore + nReprod * nTripReprod;
     }
-    
     while (kStore > kCreateReprod | kStore>kCreateWorker)
     {
       if(kStore>kCreateReprod & birthReprod(colony,Day,nDayCycle))
@@ -125,7 +124,7 @@ runSimMan <- function(enviro, colony, colParams = c(0,100,1,0,0,2,2.5,2,2,5,5.5)
       {kStore <- kStore - kCreateWorker;  nWorker <- nWorker + 1;}
     }
     
-    #if(i%%10==0){print(paste("Day: ",i,"  kStore: ",kStore,"  nReprod: ",nReprod,"  nWorker: ",nWorker));}
+    if(i%%10==0){print(paste("Day: ",i,"  kStore: ",kStore,"  nReprod: ",nReprod,"  nWorker: ",nWorker));}
     data <- rbind(data,list(i,nReprod,nWorker,kStore))
   }
   
@@ -161,13 +160,14 @@ runSimRep <- function(nRun,environment,colony)
 runSimRepMan <- function(nRun,environment,colony)
 {
   x <- rep(0,nRun);
-  PB = txtProgressBar(min = 0, max = nRun, initial = 0);
+  #PB = txtProgressBar(min = 0, max = nRun, initial = 0);
   for(i in 1:nRun)
   {
-    setTxtProgressBar(PB,i);
+    #setTxtProgressBar(PB,i);
     x[i] <- runSim(environment,colony);
   }
   return(x)
+  close(PB)
 }
 
 ################################################################
@@ -358,6 +358,43 @@ runSimAllCol <- function(nRun,nEach,colony)
   }
   return(environment)
 }
+
+################################################################
+###=====================  runSimAllDen  =====================###
+################################################################
+#Create a dataset with density functions for all combinations of data
+runSimAllDen <- function(nRun,nEach,range,env=c(.6,.7,.8,.75),col=c(.5,.5,.75,.75), which = rep(1,8), return = "vector")
+{
+  envB <- env - range; envA <- env + range;
+  colB <- col - range; colA <- col + range;
+    
+  data <- expand.grid(envEarly  = seq(envA[1],envB[1],length.out = ifelse(which[1],nEach,1)),
+                      envMiddle = seq(envA[2],envB[2],length.out = ifelse(which[2],nEach,1)),
+                      envLate   = seq(envA[3],envB[3],length.out = ifelse(which[3],nEach,1)),
+                      envScale  = seq(envA[4],envB[4],length.out = ifelse(which[4],nEach,1)),
+                      colEarly  = seq(colA[1],colB[1],length.out = ifelse(which[5],nEach,1)),
+                      colMiddle = seq(colA[2],colB[2],length.out = ifelse(which[6],nEach,1)),
+                      colLate   = seq(colA[3],colB[3],length.out = ifelse(which[7],nEach,1)),
+                      colScale  = seq(colA[4],colB[4],length.out = ifelse(which[8],nEach,1)));
+
+  results <- list()
+  
+  progress = txtProgressBar(min = 0, max = nrow(data), initial = 0)
+  
+  for(i in 1:nrow(data))
+  {
+    setTxtProgressBar(progress,i)
+    result <- runSimRepMan(nRun,as.numeric(data[i,1:4]),as.numeric(data[i,5:8]))
+    if(return == "vector")  { results[[i]] <- result }
+    if(return == "density") { results[[i]] <- density(result) }
+  }
+  close(progress)
+  
+  return(list(data,results))
+}
+
+
+
 
 
 

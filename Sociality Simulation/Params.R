@@ -1,6 +1,3 @@
-
-
-
 ################################################################
 ###=====================  birthReprod  ======================###
 ################################################################
@@ -57,7 +54,7 @@ isReprodForage <- function(nWorker,type="l2")
 {
   if(type=="l2")
   {
-    return(ifelse(nWorker<2,TRUE,FALSE))
+    return(ifelse(nWorker<1,TRUE,FALSE))
   }
     
 }
