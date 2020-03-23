@@ -15,20 +15,22 @@ VisCol <- function(colonyData,enviro,colony,colParams = c(0,100,1,0,0,2,2.5,2,2,
   nTripReprod <- colParams[6]; nTripWorker <- colParams[7];
   #Set amount of energy per trip that workers and reproductives make
   kTripWorker <- colParams[8]; kTripReprod <- colParams[9];
-  #Set amount of energy needer and reproductive
+  #Set amount of energy needed to create worker and reproductive
   kCreateWorker <- colParams[10]; kCreateReprod <- colParams[11];
   
   #Requires running runSimMan first
   ggplot(data=colonyData,aes(x=timestep)) + 
-    geom_line(aes(y=kStore,color="kStore")) + 
-    geom_line(aes(y=nReprod,color="nReprod")) + 
-    geom_line(aes(y=nWorker,color="nWorker")) + 
-    geom_line(aes(y=max(c(nWorker,nReprod))*fMortRate(enviro,timestep,nDayCycle,type="numeric"),color="fMortRate"),linetype="dashed") +
-    geom_line(aes(y=max(c(nWorker,nReprod))*birthReprod(colony,timestep,nDayCycle,type="numeric"),color="birthReprod")) +
-    scale_colour_manual("",breaks = c("kStore", "nReprod", "nWorker","fMortRate","birthReprod"),
-                        values = c("kStore"="green","nReprod"="red","nWorker"="blue","fMortRate"="black","birthReprod"="black")) +
-    ggtitle(paste("Environment: (",toString(enviro),") \nColony:          (",toString(colony),")",sep=""))
+    geom_line(aes(y=kStore,color="Energy Store")) + 
+    geom_line(aes(y=nReprod,color="Reproductives")) + 
+    geom_line(aes(y=nWorker,color="Workers")) + 
+    geom_line(aes(y=max(c(nWorker,nReprod))*fMortRate(enviro,timestep,nDayCycle,type="numeric"),color="Survival Rate"),linetype="dashed") +
+    geom_line(aes(y=max(c(nWorker,nReprod))*birthReprod(colony,timestep,nDayCycle,type="numeric"),color="Reprod:Worker")) +
+    scale_colour_manual("Legend",breaks = c("Energy Store", "Reproductives", "Workers","Survival Rate","Reprod:Worker"),
+                        values = c("Energy Store"="green","Reproductives"="red","Workers"="blue","Survival Rate"="black","Reprod:Worker"="black")) +
+    #ggtitle(paste("Environment: (",toString(enviro),") \nColony:          (",toString(colony),")",sep="")) + 
+    labs(x="Timestep (Day)",y="Quantity")
 }
+
 
 ################################################################
 ###======================  VisRepHist  ======================###
@@ -40,7 +42,6 @@ VisRepHist <- function(nReprods,enviro,colony)
   hist(nReprods,breaks=20,
        main=paste("Environment: (",toString(enviro),") \nColony: (",toString(colony),")",sep=""))
 }
-
 
 
 ################################################################
@@ -59,7 +60,7 @@ VisDensity <- function(temp,id,numplot,legend = FALSE)
 {
   params <- temp[[1]]
   results <- temp[[2]]
-  vects <- NULL #temp[[2]][[id]],temp[[2]][[id+1]],temp[[2]][[id+2]],temp[[2]][[id+3]],temp[[2]][[id+4]])
+  vects <- NULL
   
   for(i in 1:numplot)
   {
@@ -67,9 +68,10 @@ VisDensity <- function(temp,id,numplot,legend = FALSE)
   }
   
   df <- data.frame(vects = vects, 
-                   divs  = as.character(rep(1:numplot,each = length(results[[1]]) )))
+                   divs  = as.character(rep(1:numplot,each = length(results[[1]]))))
   
-  plot <- ggplot(df, aes(x = vects, fill = divs)) + geom_density(alpha = 0.25) +
+  plot <- ggplot(df, aes(x = vects, fill = divs,xlab="Number of Reproductives",ylab="Density")) + geom_density(alpha = 0.15) 
+  
   if(!legend)
   {plot <- plot + theme(legend.title = element_blank(), legend.position = "none")}
   

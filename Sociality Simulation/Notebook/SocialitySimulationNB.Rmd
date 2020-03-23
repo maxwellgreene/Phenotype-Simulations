@@ -28,8 +28,8 @@ grid.arrange(VisCol1, VisCol2, ncol = 2)
 ```
 
 ```{r,fig.width=figW,fig.height=figH,fig.align = figA,warning=FALSE,message=FALSE}
-#nReprods1 <- runSimRepMan(1000,env1,col1)
-#nReprods2 <- runSimRepMan(1000,env2,col2)
+nReprods1 <- runSimRepMan(1000,env1,col1)
+nReprods2 <- runSimRepMan(1000,env2,col2)
 VisRepHist1 <- VisRepHist(nReprods1,env1,col1)
 VisRepHist2 <- VisRepHist(nReprods2,env2,col2)
 #grid.arrange(VisRepHist1, VisRepHist2, ncol = 2)

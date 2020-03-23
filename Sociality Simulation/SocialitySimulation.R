@@ -52,7 +52,7 @@ runSim <- function(enviro,colony,nDayCycle=100,nReprod=1)
     Day <- i;
     
     #Forage as much as you can/need with workers
-    nWorker <- ceiling(nWorker*fMortRate(enviro,Day,nDayCycle));
+    nWorker <- ceiling(nWorker * fMortRate(enviro,Day,nDayCycle));
     kStore <- kStore + nWorker * nTripWorker;
     
     #Are the reproductives foraging? 
