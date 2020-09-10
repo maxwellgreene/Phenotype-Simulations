@@ -1,5 +1,5 @@
 ---
-title: "Sociality Simulation Experimentation"
+title: "Sociality Simulation"
 author: Maxwell Greene
 output: pdf_document
 ---
@@ -8,50 +8,169 @@ output: pdf_document
 library(ggplot2)
 library(plot3D)
 library(gridExtra)
-load(file="SocSimNBWS.RData")
+library(plotly)
+library(ggenealogy)
+#load(file="SocSimNBWS.RData")
 figW <- 7; figH <- 3.5; figA = "center"
-```
 
-```{r setup}
+source('/cloud/project/Sociality Simulation/newSocSim.R', echo=FALSE)
+#source('/cloud/project/Sociality Simulation/VisData.R', echo=FALSE)
+```
+```{r setup, include=FALSE}
 library(knitr)
 library(rgl)
 knit_hooks$set(webgl = hook_webgl)
 ```
 
 
-```{r,fig.width=figW,fig.height=figH,fig.align = figA,warning=FALSE,message=FALSE}
-colony1 <- runSimMan(env1,col1)
-colony2 <- runSimMan(env2,col2)
-VisCol1 <- VisCol(colony1,env1,col1)
-VisCol2 <- VisCol(colony2,env2,col2)
-grid.arrange(VisCol1, VisCol2, ncol = 2)
+
+Initialize environment and colony attributes 
+```{r}
+env <- c(0.9,0.7,0.5,0.7)
+
+col <- c(0.6,0.7,0.8,0.75)
+
+ftype <- "quad"
 ```
 
-```{r,fig.width=figW,fig.height=figH,fig.align = figA,warning=FALSE,message=FALSE}
-nReprods1 <- runSimRepMan(1000,env1,col1)
-nReprods2 <- runSimRepMan(1000,env2,col2)
-VisRepHist1 <- VisRepHist(nReprods1,env1,col1)
-VisRepHist2 <- VisRepHist(nReprods2,env2,col2)
-#grid.arrange(VisRepHist1, VisRepHist2, ncol = 2)
+Initialize parameters
+```{r}
+#Set number of Days in a Cycle
+Day <- 0;       nDayCycle <- 100;
+
+#Starting number of reproductives, workers and energy stores
+nReprod <- 1;   nWorker <- 0;   kStore <- 0;
+
+#Set amount of energy per day that workers and reproductives make
+kWorker <- 2;   kReprod <- 2;
+
+#Set amount of energy needed to create a worker and reproductive
+cWorker <- 5;   cReprod <- 5.5;
+
+#Combine all into a single vector
+params <- c(Day,nDayCycle,nReprod,nWorker,kStore,kWorker,kReprod,cWorker,cReprod)
 ```
 
-```{r,fig.width=figW,fig.height=figH,fig.align = figA,warning=FALSE,message=FALSE}
-#population1 <- runSimAllEnvGen(env1,nRun=5,nEach=3,nGen=3)
-#population2 <- runSimAllEnvGen(env2,nRun=5,nEach=3,nGen=3)
-#VisPopParams3d1 <- VisPopParams3d(population1)
-VisPopParams3d(population1)
-#VisPopParams3d2 <- VisPopParams3d(population2)
-VisPopParams3d(population2)
-#grid.arrange(grobs = list(VisPopParams3d1, VisPopParams3d2), ncol = 2,top = "Main Title")
+
+Run Single Colony, Single Season Simulation
+```{r}
+seasonData <- newRunSim(enviro = env,
+                        colony = col,
+                        params = params)
+```
+
+Visualize Single Colony, Single Season Simulation
+```{r}
+newVisCol(data = seasonData, 
+          env = env,
+          col = col,
+          type = ftype)
+```
+
+Run Repeated Colony, Single Season Simulation
+```{r}
+repeatSeasonData <- newRunSimRep(nRun = 1000,
+                                 env = env,
+                                 col = col,
+                                 ftype = ftype,
+                                 params = params)
+```
+
+Visualize Repeated Colony, Single Season Simulation
+```{r}
+#VisRepHist(nReprods = repeatSeasonData,enviro = env,colony = col)
+newVisDensity(nReprods = repeatSeasonData)
+```
+
+Run given environment with many different colonies
+```{r}
+manyColonyData <- newRunSimEnv(env   = env,
+                               type  = ftype,
+                               nRun  = 20,
+                               nEach = 8)
+```
+
+```{r}
+newVisDensity(manyColonyData$nReprod)
+```
+
+```{r}
+newVisPopParamsPlotly(manyColonyData)
+```
+
+Run given colony with many different environments
+```{r}
+manyEnvironmentData <- newRunSimCol(col = col,
+                                    type  = ftype,
+                                    nRun  = 20,
+                                    nEach = 8)
+```
+
+Plot density of nReprods for a given colony across many environments
+```{r}
+newVisDensity(manyEnvironmentData$nReprod)
+```
+
+Visualize the parameter success for a given colony across many different environments
+```{r}
+newVisPopParamsPlotly(manyEnvironmentData)
 ```
 
 
-```{r testgl, webgl=TRUE}
-x <- population1$early
-y <- population1$middle
-z <- population1$late
-plot3d(x, y, z, col=population1$nReprod)
+Run given environment with many different colonies and evolve
+```{r}
+manyColonyEvolveData <- newRunSimEnvGen(env   = env,
+                                        type  = ftype,
+                                        nRun  = 50,
+                                        nEach = 3,
+                                        nGen  = 5)
 ```
+
+Plot density of nReprods for a given environment across many colonies
+```{r}
+newVisDensity(manyColonyEvolveData$nReprod)
+```
+
+Visualize the parameter success for a given environment across many different colonies
+```{r}
+newVisPopParamsPlotly(manyColonyEvolveData)
+```
+
+
+
+Run given environment with many different colonies and evolve and track lineage
+```{r}
+manyColonyEvolveLineageData <- newRunSimEnvGenLin(env   = env,
+                                                  ftype  = ftype,
+                                                  nRun  = 50,
+                                                  nEach = 3,
+                                                  nGen  = 5)
+```
+
+Plot density of nReprods for a given environment across many colonies evolved and tracked
+```{r}
+newVisDensity(manyColonyEvolveLineageData$nReprod)
+```
+
+Visualize the parameter success for a given environment across many different colonies evolved and tracked
+```{r}
+newVisPopParamsPlotly(manyColonyEvolveLineageData)
+```
+
+Visualize the lineage path between two colonies in an evolved population
+```{r}
+newVisLinPath(manyColonyEvolveLineageData,"0","80","generation","child")
+```
+
+Visualize the ancestral tree of a population, given an environment and evolved
+```{r}
+newVisAncTree(manyColonyEvolveLineageData,indiv = "18")
+```
+
+
+
+
+
 
 
 

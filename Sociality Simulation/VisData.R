@@ -5,18 +5,16 @@
 ################################################################
 
 #Visualize single colony dynamcs throughout the season
-VisCol <- function(colonyData,enviro,colony,colParams = c(0,100,1,0,0,2,2.5,2,2,5,5.5))
+VisCol <- function(colonyData,enviro,colony,colParams = c(0,100,1,0,0,2,2,5,5.5))
 {
   #Set number of Days in a Cycle
   Day <- colParams[1]; nDayCycle <- colParams[2];
   #Starting number of reproductives, workers and energy stores
   nReprod <- colParams[3]; nWorker <- colParams[4]; kStore <- colParams[5];
-  #Number of trips that workers and reproductives can make each day
-  nTripReprod <- colParams[6]; nTripWorker <- colParams[7];
   #Set amount of energy per trip that workers and reproductives make
-  kTripWorker <- colParams[8]; kTripReprod <- colParams[9];
+  kTripWorker <- colParams[6]; kTripReprod <- colParams[7];
   #Set amount of energy needed to create worker and reproductive
-  kCreateWorker <- colParams[10]; kCreateReprod <- colParams[11];
+  kCreateWorker <- colParams[8]; kCreateReprod <- colParams[9];
   
   #Requires running runSimMan first
   ggplot(data=colonyData,aes(x=timestep)) + 
@@ -27,7 +25,7 @@ VisCol <- function(colonyData,enviro,colony,colParams = c(0,100,1,0,0,2,2.5,2,2,
     geom_line(aes(y=max(c(nWorker,nReprod))*birthReprod(colony,timestep,nDayCycle,type="numeric"),color="Reprod:Worker")) +
     scale_colour_manual("Legend",breaks = c("Energy Store", "Reproductives", "Workers","Survival Rate","Reprod:Worker"),
                         values = c("Energy Store"="green","Reproductives"="red","Workers"="blue","Survival Rate"="black","Reprod:Worker"="black")) +
-    #ggtitle(paste("Environment: (",toString(enviro),") \nColony:          (",toString(colony),")",sep="")) + 
+    ggtitle(paste("Environment: (",toString(enviro),") \nColony:          (",toString(colony),")",sep="")) + 
     labs(x="Timestep (Day)",y="Quantity")
 }
 
@@ -70,12 +68,42 @@ VisDensity <- function(temp,id,numplot,legend = FALSE)
   df <- data.frame(vects = vects, 
                    divs  = as.character(rep(1:numplot,each = length(results[[1]]))))
   
-  plot <- ggplot(df, aes(x = vects, fill = divs,xlab="Number of Reproductives",ylab="Density")) + geom_density(alpha = 0.15) 
+  plot <- ggplot(df, aes(x = vects, fill = divs)) + 
+    geom_density(alpha = 0.15) + xlab("Number of Reproductives") + ylab("Density") + 
+    ggtitle("Reproductives at End of Season")
   
   if(!legend)
   {plot <- plot + theme(legend.title = element_blank(), legend.position = "none")}
   
   plot
+}
+
+################################################################
+###===================  VisDensityParams  ===================###
+################################################################
+
+VisDensityParams <- function(temp)
+{
+  params <- temp[[1]]
+  
+  plotdata <- data.frame(time=double(),type=character(),value=double())
+  t <- seq(from=0,to=1,length.out = 1001)
+  
+  for(i in rows(params))
+  {
+    p <- params[i,]
+    print(p)
+    
+    Dw <- p$envScale*(p$envEarly*(t-1)^2 + p$envMiddle*(1-4*(t-.5)^2) + p$envLate*t^2)
+    Br <- p$colScale*(p$colEarly*(t-1)^2 + p$colMiddle*(1-4*(t-.5)^2) + p$colLate*t^2)
+    #Dw <- Dw / max(Dw); Br <- Br / max(Br)
+    tempdata <- data.frame(time = rep(t,2),
+                     value= c(Dw,Br),
+                     type = c(rep("Survival Rate",length(t)),rep("Birth Rate",length(t))))
+    plotdata <- rbind(plotdata,tempdata)
+  }
+  ggplot(plotdata) + geom_line(aes(x=time,y=value,linetype=type),lwd=.5) + xlab("Seasonal Progress (Percent)") + 
+    ylab("Value") + theme(legend.title = element_blank()) + ggtitle("Parameter Values") + ylim(c(0,1))
 }
 
 ################################################################
@@ -86,7 +114,8 @@ VisDensity <- function(temp,id,numplot,legend = FALSE)
 # in an interactive plotly plot
 VisPopParamsPlotly <- function(population)
 {
-  plot_ly(x=population$early, y=population$middle, z=population$late, type="scatter3d", mode="markers", color=population$nReprod) %>% 
+  plot_ly(x=population$early, y=population$middle, z=population$late, 
+          type="scatter3d", mode="markers", color=population$nReprod) %>% 
     layout(title = "Number of Reproductives as a Function of Colony",
            scene = list(
              xaxis = list(title = "Early Season"),

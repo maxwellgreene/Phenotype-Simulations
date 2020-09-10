@@ -1,0 +1,239 @@
+---
+title: "Systems of DE's for Resource Allocation Strategies in Annual Social Insects"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r,warning=FALSE,message=FALSE}
+library(mosaic)
+library(mosaicCalc)
+library(deSolve)
+library(ggplot2)
+library(tidyr)
+library(RColorBrewer)
+library(deSolve)
+library(reshape2)
+```
+
+```{r}
+SDE_std <- function(t, state, parameters){
+  with(as.list(c(state, parameters)),{
+          tt <- t/Ttol
+          Dw <- Dw4*(Dw1*(tt-1)^2 + Dw2*(1-4*(tt-.5)^2) + Dw3*tt^2)
+          Br <- Br4*(Br1*(tt-1)^2 + Br2*(1-4*(tt-.5)^2) + Br3*tt^2)
+          
+          dWorkers <- -Dw*Workers+(1-Br)*Energy*Pe/Cw
+          dReproductives <- Br*Energy*Pe/Cr-Dr*Reproductives
+          dEnergy <- Kw*Workers+Kr*Reproductives-Pe*Energy
+          list(c(dWorkers, dReproductives, dEnergy))
+  })}
+
+SDE_varK <- function(t, state, parameters){
+  with(as.list(c(state, parameters)),{
+          tt <- t/Ttol
+          Dw <- Dw4*(Dw1*(tt-1)^2 + Dw2*(1-4*(tt-.5)^2) + Dw3*tt^2)
+          Br <- Br4*(Br1*(tt-1)^2 + Br2*(1-4*(tt-.5)^2) + Br3*tt^2)
+          Kw <- Kf4*(Kf1*(tt-1)^2 + Kf2*(1-4*(tt-.5)^2) + Kf3*tt^2)
+          
+          dWorkers <- -Dw*Workers+(1-Br)*Energy*Pe/Cw
+          dReproductives <- Br*Energy*Pe/Cr-Dr*Reproductives
+          dEnergy <- Kw*Workers+Kr*Reproductives-Pe*Energy
+          list(c(dWorkers, dReproductives, dEnergy))
+  })}
+
+SDE_bang <- function(t, state, parameters){
+  with(as.list(c(state, parameters)),{
+          tt <- t/Ttol
+          Dw <- Dw4*(Dw1*(tt-1)^2 + Dw2*(1-4*(tt-.5)^2) + Dw3*tt^2)
+          if(tt < critval)   {Br <- 0}   else  {Br <- 1}
+          
+          dWorkers <- -Dw*Workers+(1-Br)*Energy*Pe/Cw
+          dReproductives <- Br*Energy*Pe/Cr-Dr*Reproductives
+          dEnergy <- Kw*Workers+Kr*Reproductives-Pe*Energy
+          
+          list(c(dWorkers, dReproductives, dEnergy))
+  })}
+
+SDE_bangvarK <- function(t, state, parameters){
+  with(as.list(c(state, parameters)),{
+          tt <- t/Ttol
+          Dw <- Dw4*(Dw1*(tt-1)^2 + Dw2*(1-4*(tt-.5)^2) + Dw3*tt^2)
+          if(tt < critval)   {Br <- 0}   else  {Br <- 1}
+          
+          Kw <- Kf4*(Kf1*(tt-1)^2 + Kf2*(1-4*(tt-.5)^2) + Kf3*tt^2)
+          dWorkers <- -Dw*Workers+(1-Br)*Energy*Pe/Cw
+          dReproductives <- Br*Energy*Pe/Cr-Dr*Reproductives
+          dEnergy <- Kw*Workers+Kr*Reproductives-Pe*Energy
+          
+          list(c(dWorkers, dReproductives, dEnergy))
+  })}
+
+times <- seq(0, 100, by = .1)
+```
+
+
+```{r}
+env <- c( 0.4 , 0.5 , 0.5 , 0.85)
+col <- c( 0.1 , 0.1 , 0.9 , 0.4 )
+Kf0 <- c( 1.0 , 0.75, 0.15, 1.75)
+
+parameters <- c(Dw1 = env[1], Dw2 = env[2], Dw3 = env[3], Dw4 = env[4],
+                Br1 = col[1], Br2 = col[2], Br3 = col[3], Br4 = col[4],
+                Cw = 3, Cr = 4, Kw = 2, Kr = 0, Pe = 1, Dr = .01, Ttol = 100, critval=0.9)
+
+state <- c(Workers = 0,Reproductives = 1, Energy = 1)
+
+SDE_std_sol <- ode(y = state, times = times, func = SDE_std, parms = parameters)
+
+SDE_std_sol_df <- melt(as.data.frame(SDE_std_sol), id.vars = "time")
+
+ggplot(SDE_std_sol_df, mapping = aes(x=time,y=value, color=variable)) + geom_line() + 
+  scale_colour_manual(values=c("blue", "red", "green")) + ylab("Value") + xlab(" ") + 
+  ggtitle("Continuous Model Colony Dynamics")
+
+##########################
+#### Parameter Plot 1 ####
+##########################
+p <- as.list(parameters)
+Dw <- p$Dw4*(p$Dw1*(t-1)^2 + p$Dw2*(1-4*(t-.5)^2) + p$Dw3*t^2)
+Br <- p$Br4*(p$Br1*(t-1)^2 + p$Br2*(1-4*(t-.5)^2) + p$Br3*t^2)
+df <- data.frame(time = rep(t,2),value = c(Dw,Br),
+                 type=c(rep("Forager Mortality",length(t)),rep("Reproductive Allocation",length(t))))
+#df <- data.frame(time = rep(t,3),value = c(Dw,Br,Kw),
+#                 type=c(rep("Forager Mortality",length(t)),rep("Reproductive Allocation",length(t)),rep("Resource Availability",length(t))))
+
+ggplot(data = df, mapping = aes(x=time,y=value, linetype=type)) + geom_line() +
+  ylim(c(0,1)) + xlab("") + ylab(" ") + 
+  ggtitle("Parameter Values")
+```
+
+```{r}
+env <- c( 0.4 , 0.5 , 0.5 , 0.85)
+col <- c( 0.1 , 0.1 , 0.9 , 0.4 )
+Kf0 <- c( 1.0 , 0.75, 0.15, 1.75)
+
+parameters <- c(Dw1 = env[1], Dw2 = env[2], Dw3 = env[3], Dw4 = env[4],
+                Br1 = col[1], Br2 = col[2], Br3 = col[3], Br4 = col[4],
+                Kf1 = Kf0[1], Kf2 = Kf0[2], Kf3 = Kf0[3], Kf4 = Kf0[4],
+                Cw = 3, Cr = 4, Kr = 0, Pe = 1, Dr = .01, Ttol = 100, critval=0.9)
+
+state <- c(Workers = 0,Reproductives = 1, Energy = 1)
+
+SDE_varK_sol <- ode(y = state, times = times, func = SDE_varK, parms = parameters)
+
+SDE_varK_sol_df <- melt(as.data.frame(SDE_std_sol), id.vars = "time")
+
+ggplot(SDE_varK_sol_df, mapping = aes(x=time,y=value, color=variable)) + geom_line() + 
+  scale_colour_manual(values=c("blue", "red", "green")) + ylab("Value") + xlab(" ") + 
+  ggtitle("Continuous Model Colony Dynamics")
+
+##########################
+#### Parameter Plot 2 ####
+##########################
+p <- as.list(parameters)
+Dw <- p$Dw4*(p$Dw1*(t-1)^2 + p$Dw2*(1-4*(t-.5)^2) + p$Dw3*t^2)
+Br <- p$Br4*(p$Br1*(t-1)^2 + p$Br2*(1-4*(t-.5)^2) + p$Br3*t^2)
+Kw <- p$Kf4*(p$Kf1*(t-1)^2 + p$Kf2*(1-4*(t-.5)^2) + p$Kf3*t^2)
+df <- data.frame(time = rep(t,3),value = c(Dw,Br,Kw),
+                 type=c(rep("Forager Mortality",length(t)),rep("Reproductive Allocation",length(t)),rep("Resource Availability",length(t))))
+
+ggplot(data = df, mapping = aes(x=time,y=value, linetype=type)) + geom_line() + #ylim(c(0,2)) + 
+  xlab("") + ylab(" ") + 
+  ggtitle("Parameter Values")
+```
+
+
+#Parameter Variation
+```{r}
+n <- 10
+env <- c( 0.4 , 0.6 , 0.5, 0.7)
+col <- c( 0.1 , 0.1 , .9 , 1.0)
+Kf0 <- c(   1 ,  .4 ,  1 , 2.0)
+state <- c(Workers = 0, Reproductives = 1, Energy = 1)
+parameters <- c(Dw1 = env[1], Dw2 = env[2], Dw3 = env[3], Dw4 = env[4],
+                Br1 = col[1], Br2 = col[2], Br3 = col[3], Br4 = col[4],
+                Kf1 = Kf0[1], Kf2 = Kf0[2], Kf3 = Kf0[3], Kf4 = Kf0[4],
+                Cw = 3.5, Cr = 3, Pe = 1, Dr = .01, Kr = 0, Ttol = 100,
+                critval = 0.7)
+
+param.vals <- seq(from=0,to=1,length.out = n)
+dfDEsol2 <- list(); p <- list();
+temp <- ode(y = state, times = times, func = systemDE, parms = parameters)
+dfDEsol3 <- melt(as.data.frame(DEsol), id.vars = "time")[,c(1,2)]
+
+for (i in 1:n)
+{
+  parameters["Kf1"] <- param.vals[i]
+  DEsol2 <- ode(y = state, times = times, func = systemDE, parms = parameters)
+  dfDEsol2[[i]] <- melt(as.data.frame(DEsol2), id.vars = "time")
+  dfDEsol3 <- cbind(dfDEsol3,dfDEsol2[[i]][,3])
+}
+names(dfDEsol3) <- c("t","var",as.character(1:n))
+forplot <- melt(dfDEsol3,id.vars = c("t","var"))
+
+#ggplot(forplot) + geom_line(aes(x=t,y=value,group=var,color=var))
+#dfDEsol3
+#melt(dfDEsol3,id.vars = c("t","var"))
+
+for(j in 1:n)
+{
+  p[[j]] <- ggplot(dfDEsol2[[j]]) + geom_line(mapping = aes(x=time,y=value,color=variable))
+}
+p
+```
+
+#Non-dimensionalization
+```{r}
+env <- c( 0.1 , 0.1 , 0.1, 0.1)
+col <- c( 0.1 , 0.5 , 0.5, 1)
+Kf0 <- c( 0.1 , 0.1 , 0.1, 0.001)
+
+state <- c(W2 = 0,R2 = .1, E2 = .1)
+parameters <- c(Dw1 = env[1], Dw2 = env[2], Dw3 = env[3], Dw4 = env[4],
+                Br1 = col[1], Br2 = col[2], Br3 = col[3], Br4 = col[4],
+                Kf1 = Kf0[1], Kf2 = Kf0[2], Kf3 = Kf0[3], Kf4 = Kf0[4],
+                Cw = 3.5, Cr = 5, Pe = 0, Dr = .2, Kr = 0, Ttol = 100,
+                critval = .6)
+
+times <- seq(0, 100, by = .1)
+
+systemDE <- function(t, state, parameters){
+  with(as.list(c(state, parameters)),{
+          tt <- t/Ttol
+          Dw <- Dw4*(Dw1*(tt-1)^2 + Dw2*(1-4*(tt-.5)^2) + Dw3*tt^2)
+          Br <- Br4*(Br1*(tt-1)^2 + Br2*(1-4*(tt-.5)^2) + Br3*tt^2)
+          #if(tt < critval-.1)   {Br <- 0}     else if(tt < critval) {Br <- 0.1}     else         {Br <- 1}
+          Kw <- Kf4*(Kf1*(tt-1)^2 + Kf2*(1-4*(tt-.5)^2) + Kf3*tt^2)
+          
+          w <- ((1-Br)*Kw)/((Cw)*(Dw^2))
+          r <- (Br*Kr)/((Cr)*(Dw^2))
+          
+          dW2 <- w*E2-W2
+          dR2 <- r*E2-R2
+          dE2 <- W2+R2
+          
+          list(c(dW2, dR2, dE2))
+})}
+
+DEsol <- ode(y = state, times = times, func = systemDE, parms = parameters)
+
+dfDEsol <- melt(as.data.frame(DEsol), id.vars = "time")
+
+ggplot(dfDEsol, mapping = aes(x=time,y=value, color=variable)) + geom_line() +
+  scale_colour_manual(values=c("blue", "red", "green")) + ggtitle("Continuous Model Colony Dynamics")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
